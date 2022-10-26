@@ -1,0 +1,44 @@
+{
+    // Comments are accepted in the manifest, even though it is JSON.
+    "manifest_version": 3,
+    "name": "Leak Inspector v3",
+    "description": "An adaptation of Leak Inspector using manifest v3",
+    "version": "0.0.1",
+    "icons": {
+        "16": "logo/logo-16.png",
+        "48": "logo/logo-48.png",
+        "128": "logo/logo-128.png"
+    },
+    "options_page": "settings/settings.html",
+    "action": {
+        "default_title": "Leak Inspector v3",
+        "default_popup": "popup/popup.html"
+    },
+    "host_permissions": [
+        "<all_urls>",
+        "http://*/",
+        "https://*/",
+        "*://*/*"
+      ],
+      "permissions": [
+        "contextMenus",
+        "webRequest",
+        "webNavigation",
+        "declarativeNetRequest",
+        "activeTab",
+        "tabs",
+        "storage",
+        "notifications",
+        "<all_urls>",
+        "http://*/",
+        "https://*/",
+        "*://*/*"
+      ],
+    "background": {
+        "service_worker": "service-worker.js"
+    },
+    "content_scripts": [{
+        "js": ["foreground.js"],
+        "matches": ["https://github.com/*"]
+    }]
+}
