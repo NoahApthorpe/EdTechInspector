@@ -7,7 +7,7 @@
  * @license MIT
  */
 /*jslint bitwise: true */
-(function () {
+// (function () {
   'use strict';
 
   var root = typeof window === 'object' ? window : {};
@@ -389,11 +389,11 @@
   if (COMMON_JS) {
     module.exports = exports;
   } else {
-    root.base64 = exports;
+    var base64 = exports;
     if(AMD) {
       define(function() {
         return exports;
       });
     }
   }
-})();
+// })();

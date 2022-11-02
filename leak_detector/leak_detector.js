@@ -1,4 +1,4 @@
-importScripts('leak_detector/base64.js','leak_detector/custom_map.js','leak_detector/lzstring.js','leak_detector/md2.js','leak_detector/md4.js','leak_detector/md5.js','leak_detector/sha_salted.js','leak_detector/sha1.js','leak_detector/sha256.js','leak_detector/sha512.js')
+// importScripts('leak_detector/base64.js','leak_detector/custom_map.js','leak_detector/lzstring.js','leak_detector/md2.js','leak_detector/md4.js','leak_detector/md5.js','leak_detector/sha_salted.js','leak_detector/sha1.js','leak_detector/sha256.js','leak_detector/sha512.js')
 
 DELIMITERS = new RegExp("[&|\\,]|%3D|%26");
 EXTENSION_RE = new RegExp("\\\\.[A-Za-z]{2,4}$");
@@ -423,6 +423,9 @@ class LeakDetector {
         if (decoded === undefined) {
           continue;
         }
+        if (decoded === null) {
+          continue;
+        }
 
         let encoding_stack = prev_encodings.concat(encoding);
 
@@ -466,6 +469,7 @@ class LeakDetector {
       if (parameter.parse_qs && parameter.parse_qs.length === 2) {
         searchName = parameter.parse_qs[0];
         searchValue = parameter.parse_qs[1];
+        console.log(searchValue)
         prev_encodings = ["urlencode"];
         n_layers_param = nlayers - 1;
       }

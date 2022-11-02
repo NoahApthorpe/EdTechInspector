@@ -8,7 +8,7 @@
  * @license MIT
  */
 /*jslint bitwise: true */
-(function () {
+// (function () {
   'use strict';
 
   var root = typeof window === 'object' ? window : {};
@@ -564,11 +564,12 @@
      * md4([]); // 31d6cfe0d16ae931b73c59d7e0c089c0
      * md4(new Uint8Array([])); // 31d6cfe0d16ae931b73c59d7e0c089c0
      */
-    root.md4 = exports;
+    var md4 = exports;
     if (AMD) {
+      console.log("hey")
       define(function () {
         return exports;
       });
     }
   }
-})();
+// })();

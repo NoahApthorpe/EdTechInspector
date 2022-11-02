@@ -7,7 +7,7 @@
  * @copyright Chen, Yi-Cyuan 2014-2017
  * @license MIT
  */
- (function () {
+// (function () {
   'use strict';
 
   var ERROR = 'input is invalid type';
@@ -673,11 +673,11 @@
      * md5([]); // d41d8cd98f00b204e9800998ecf8427e
      * md5(new Uint8Array([])); // d41d8cd98f00b204e9800998ecf8427e
      */
-    root.md5 = exports;
+    var md5 = exports;
     if (AMD) {
       define(function () {
         return exports;
       });
     }
   }
-})();
+// })();

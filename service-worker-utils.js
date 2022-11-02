@@ -2,7 +2,7 @@
 // which means all of its functions and variables will be accessible
 // inside the service worker.
 // The importation is done in the file `service-worker.js`.
-importScripts('leak_detector/leak_detector.js')
+// importScripts('leak_detector/leak_detector.js')
 
 function decodeRequestBody(data) {
   let decodedBody;
