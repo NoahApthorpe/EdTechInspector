@@ -381,9 +381,9 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
   );
   const url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
-    console.log("The leak method and content is:", url_leaks[0]);
-    console.log("The url leaked to is:", request.url);
-    console.log("The domain leaked to is:", requestBaseDomain);
+    console.log("The leaked content is:", url_leaks[0]);
+    console.log("The url and domain leaked to:\n", request.url,"\n", requestBaseDomain);
+    console.log("The domain that initiated the leak:", request.initiator + "/");
     console.log("Leak in the URL happened at:", timeStamp);
     console.log("Tracker info:", tdsResult);
     return ;
@@ -409,9 +409,9 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       (encoding_layers = 3)
     );
     if (postLeaks.size) {
-      console.log("The leak method and content is:", postLeaks);
-      console.log("The url leaked to is:", request.url);
-      console.log("The domain leaked to is:", requestBaseDomain);
+      console.log("The leaked content is:", postLeaks);
+      console.log("The url and domain leaked to:\n", request.url,"\n", requestBaseDomain);
+      console.log("The domain that initiated the leak:", request.initiator + "/");
       console.log("Leak in the URL happened at:", timeStamp);
       console.log("Tracker info:", tdsResult);
       return ;

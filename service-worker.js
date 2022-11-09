@@ -54,12 +54,12 @@ chrome.webRequest.onBeforeRequest.addListener(
       let tabHost = extractHostFromURL(tabURL);
 
       // CHECK IF THIRD PARTY!
-      // if (!isThirdParty(requestHost, tabHost)) {return ;};
+      if (!isThirdParty(requestHost, tabHost)) {return ;};
 
       // TRACKER
-      // const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
+      const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
       // if (!tdsResult) {return;}
-      var tdsResult = {};
+      // var tdsResult = {};
 
       // CHECK REQUEST
       result = checkRequest(
