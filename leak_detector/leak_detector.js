@@ -469,7 +469,7 @@ class LeakDetector {
       if (parameter.parse_qs && parameter.parse_qs.length === 2) {
         searchName = parameter.parse_qs[0];
         searchValue = parameter.parse_qs[1];
-        console.log(searchValue)
+        // console.log(searchValue)
         prev_encodings = ["urlencode"];
         n_layers_param = nlayers - 1;
       }

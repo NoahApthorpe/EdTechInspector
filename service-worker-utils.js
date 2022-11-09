@@ -367,8 +367,8 @@ URI.prototype = {
   },
 };
 
-function checkRequest(request, inputElements, tdsResult, timeStamp, requestBaseDomain) {
-  const searchTerms = inputElements.inputFields.map((inputEl) => inputEl.value);
+function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDomain) {
+  timeStamp = new Date(timeStamp);
   const leak_detector = new LeakDetector(
     searchTerms,
     (precompute_hashes = true),
@@ -381,21 +381,17 @@ function checkRequest(request, inputElements, tdsResult, timeStamp, requestBaseD
   );
   const url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
-    console.log("URL leak occured by tracker domain:", timeStamp, url_leaks);
-    console.log(tdsResult);
-    return {
-      block: true,
-      type: "Tracker Domain",
-      timeStamp,
-      domain: requestBaseDomain,
-      trackerDetails: tdsResult ? tdsResult.tracker : undefined,
-      inputFields: inputElements.inputFields.filter(el => [...url_leaks].some(leak => leak.includes(el.value)))
-    };
+    console.log("The leak method and content is:", url_leaks[0]);
+    console.log("The url leaked to is:", request.url);
+    console.log("The domain leaked to is:", requestBaseDomain);
+    console.log("Leak in the URL happened at:", timeStamp);
+    console.log("Tracker info:", tdsResult);
+    return ;
   }
 
   let requestBodies = [];
   const reqBody = request.requestBody;
-  if (request.method == "POST" && reqBody) {
+  if (reqBody) {
     if (reqBody.raw) {
       try {
         requestBodies = reqBody.raw.map(function (data) {
@@ -413,27 +409,15 @@ function checkRequest(request, inputElements, tdsResult, timeStamp, requestBaseD
       (encoding_layers = 3)
     );
     if (postLeaks.size) {
-      console.log(
-        "POST body leak to tracker domain ",
-        timeStamp,
-        postLeaks
-      );
-      console.log(tdsResult);
-      return {
-        block: true,
-        type: "Tracker Domain",
-        timeStamp,
-        domain: requestBaseDomain,
-        trackerDetails: tdsResult ? tdsResult.tracker : undefined,
-        inputFields: inputElements.inputFields.filter(
-          el => [...postLeaks].some(leak => leak.includes(el.value))
-        )
-      };
+      console.log("The leak method and content is:", postLeaks);
+      console.log("The url leaked to is:", request.url);
+      console.log("The domain leaked to is:", requestBaseDomain);
+      console.log("Leak in the URL happened at:", timeStamp);
+      console.log("Tracker info:", tdsResult);
+      return ;
     }
   }
-  return {
-    block: false,
-  };
+  return ;
 }
 
 function checkSniff(elValue, xpath, fieldName, stack, tabURL) {

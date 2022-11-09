@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Site for Ed Tech Privacy</title>
+</head>
+<body>
+
+  <form>
+  <label for="post">POST URL:</label><br>
+  <input type="text" id="postURL" name="postURL"><br>
+  <label for="post">POST CONTENT:</label><br>
+  <input type="text" id="postcontent" name="postcontent"><br>
+  </form> 
+  <button id="postButton">Send Post</button>
+
+  <br><br>
+
+  <form>
+  <label for="get">GET URL:</label><br>
+  <input type="text" id="getURL" name="getURL"><br>
+  <label for="get">GET CONTENT:</label><br>
+  <input type="text" id="getcontent" name="getcontent"><br>
+  </form>
+  <button id="getButton">Send Get</button>
+
+  <script
+        src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+        crossorigin="anonymous"></script>
+
+  <script>
+    $("#postButton").click(function postClick(){
+    $.post($("#postURL").val(), $("#postcontent").val());
+  });
+  </script>
+
+  <script>
+    $("#getButton").click(function postClick(){
+    $.get($("#getURL").val(), $("#getcontent").val());
+  });
+  </script>
+</body>
+</html>
