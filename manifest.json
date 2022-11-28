@@ -1,9 +1,9 @@
 {
     // Comments are accepted in the manifest, even though it is JSON.
     "manifest_version": 3,
-    "name": "Leak Inspector v3",
+    "name": "Ed Tech Leak Inspector",
     "description": "An adaptation of Leak Inspector using manifest v3",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "icons": {
         "16": "logo/logo-16.png",
         "48": "logo/logo-48.png",
@@ -11,7 +11,8 @@
     },
     "options_page": "settings/settings.html",
     "action": {
-        "default_title": "Leak Inspector v3",
+        "default_title": "Ed Tech Leak Inspector",
+        "default_icon": "logo/logo-16.png",
         "default_popup": "popup/popup.html"
     },
     "host_permissions": [
@@ -39,6 +40,6 @@
     },
     "content_scripts": [{
         "js": ["foreground.js"],
-        "matches": ["https://github.com/*"]
+        "matches": ["<all_urls>"]
     }]
 }

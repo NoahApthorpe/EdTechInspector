@@ -2,8 +2,6 @@
 // when the extension is installed or refreshed (or when you access its console).
 // It would correspond to the background script in chrome extensions v2.
 
-// console.log("This prints to the console of the service worker (background script)")
-
 // Importing and using functionality from external files is also possible.
 importScripts('service-worker-utils.js');
 importScripts('leak_detector/leak_detector.js','leak_detector/base64.js','leak_detector/custom_map.js','leak_detector/lzstring.js','leak_detector/md2.js','leak_detector/md4.js','leak_detector/md5.js','leak_detector/sha_salted.js','leak_detector/sha1.js','leak_detector/sha256.js','leak_detector/sha512.js');
@@ -28,9 +26,46 @@ importScripts('tracker/psl.js','tracker/tracker.js','data/ddg_tds.js','data/enti
 // console.log(url_leaks)
 
 
+var searchTerms = chrome.storage.local.get(['info'], function(result) {
+  console.log(Array.from(result.info));
+  return Array.from(result.info);
+});
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.email) {
+      let obj = chrome.storage.local.get(['info'], function(result) {
+        return result;
+      });
+      console.log(obj+1);
+      if (obj == undefined) {obj = {'info': []}}
+      if (!obj.info.includes(request.email)) {obj.info.push(request.email);}
+      console.log(obj+2);
+      console.log(obj.info+3);
+      chrome.storage.local.set({info: obj.info}, function() {
+        console.log('Value is set to ' + obj.info);
+      });
+    }
+  }
+);
+  
+// On Installed
+// chrome.runtime.onInstalled.addListener(
+  //   function (details) {
+    //     if (details.reason == "install") {
+      //       console.log("Installed!");
+      //       var stuid = prompt("Student ID: ");
+      //       console.log(stuid);
+      //     }
+      //   }
+      // );
+
 
 // SEARCH TERMS
-let searchTerms = ['dwang@colgate.edu','napthorpe@colgate.edu','I Love Colgate', 'Colgate13'];
+searchTerms = chrome.storage.local.get(['info'], function(result) {
+  console.log(result.info+4);
+  return result.info;
+});
 
 // INITIALIZE TRACKERS INFO
 let tds = new Trackers();
@@ -40,6 +75,10 @@ tds.setLists([tds_tracker_info]);
 // INTERCEPT REQUESTS
 chrome.webRequest.onBeforeRequest.addListener(
   function (request) {
+    let searchTerms = chrome.storage.local.get(['info'], function(result) {
+      console.log(Array.from(result.info)+5);
+      return result.info;
+    });
     if (request.method == "POST") {
       // PRINT TEST
       // console.log("This is the raw data:", request.requestBody["raw"]);
