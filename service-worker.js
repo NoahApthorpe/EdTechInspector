@@ -26,89 +26,82 @@ importScripts('tracker/psl.js','tracker/tracker.js','data/ddg_tds.js','data/enti
 // console.log(url_leaks)
 
 
-var searchTerms = chrome.storage.local.get(['info'], function(result) {
-  console.log(Array.from(result.info));
-  return Array.from(result.info);
-});
+// var searchTerms = chrome.storage.local.get(['info'], function(result) {
+//   console.log(Array.from(result.info));
+//   return Array.from(result.info);
+// });
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if (request.email) {
-      let obj = chrome.storage.local.get(['info'], function(result) {
-        return result;
-      });
-      console.log(obj+1);
-      if (obj == undefined) {obj = {'info': []}}
-      if (!obj.info.includes(request.email)) {obj.info.push(request.email);}
-      console.log(obj+2);
-      console.log(obj.info+3);
-      chrome.storage.local.set({info: obj.info}, function() {
-        console.log('Value is set to ' + obj.info);
-      });
-    }
-  }
-);
-  
-// On Installed
-// chrome.runtime.onInstalled.addListener(
-  //   function (details) {
-    //     if (details.reason == "install") {
-      //       console.log("Installed!");
-      //       var stuid = prompt("Student ID: ");
-      //       console.log(stuid);
-      //     }
-      //   }
-      // );
-
-
-// SEARCH TERMS
-searchTerms = chrome.storage.local.get(['info'], function(result) {
-  console.log(result.info+4);
-  return result.info;
-});
+// // SEARCH TERMS
+// searchTerms = chrome.storage.local.get(['info'], function(result) {
+//   console.log(result.info+" initialize");
+//   return result.info;
+// });
 
 // INITIALIZE TRACKERS INFO
 let tds = new Trackers();
 // initialize with the blocklist info
 tds.setLists([tds_tracker_info]);
 
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.email) {
+      chrome.storage.local.get(['info'], function(obj) {
+        console.log(obj);
+        if (Object.keys(obj).length == 0) {
+          obj = {'info': {'email': undefined,'ID': undefined}};
+        };
+        console.log(obj);
+        obj.info.email = request.email;
+        chrome.storage.local.set({info: obj.info}, function() {
+          console.log('Value is set to ' + obj.info.email);
+        });
+      });
+      // chrome.storage.local.remove(["info"],function(){
+      //  })
+    }
+  }
+);
+
+
 // INTERCEPT REQUESTS
 chrome.webRequest.onBeforeRequest.addListener(
   function (request) {
     let searchTerms = chrome.storage.local.get(['info'], function(result) {
-      console.log(Array.from(result.info)+5);
+      let searchTerms = Object.values(result.info);
+      
+      if (request.method == "POST") {
+        // PRINT TEST
+        // console.log(searchTerms);
+        // console.log("This is the raw data:", request.requestBody["raw"]);
+  
+  
+        // GET INFO
+        const reqURL = request.url;
+        const requestHost = extractHostFromURL(reqURL);
+        const requestBaseDomain = getBaseDomain(requestHost);
+  
+        const tabURL = request.initiator + "/"; // not complete url
+        let tabHost = extractHostFromURL(tabURL);
+  
+        // CHECK IF THIRD PARTY!
+        if (!isThirdParty(requestHost, tabHost)) {return ;};
+  
+        // TRACKER
+        const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
+        // if (!tdsResult) {return;}
+        // var tdsResult = {};
+  
+        // CHECK REQUEST
+        result = checkRequest(
+          request,
+          searchTerms,
+          tdsResult,
+          request.timeStamp,
+          requestBaseDomain
+        );
+      };
       return result.info;
     });
-    if (request.method == "POST") {
-      // PRINT TEST
-      // console.log("This is the raw data:", request.requestBody["raw"]);
-
-
-      // GET INFO
-      const reqURL = request.url;
-      const requestHost = extractHostFromURL(reqURL);
-      const requestBaseDomain = getBaseDomain(requestHost);
-
-      const tabURL = request.initiator + "/"; // not complete url
-      let tabHost = extractHostFromURL(tabURL);
-
-      // CHECK IF THIRD PARTY!
-      if (!isThirdParty(requestHost, tabHost)) {return ;};
-
-      // TRACKER
-      const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
-      // if (!tdsResult) {return;}
-      // var tdsResult = {};
-
-      // CHECK REQUEST
-      result = checkRequest(
-        request,
-        searchTerms,
-        tdsResult,
-        request.timeStamp,
-        requestBaseDomain
-      );
-    };
   },
   { urls: ["<all_urls>"] },
   ["requestBody"]
