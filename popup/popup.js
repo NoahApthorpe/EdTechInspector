@@ -1,8 +1,17 @@
+var button = document.getElementById('savebutton');
+var currentemail = document.getElementById('CurrentEmail');
+var currentid = document.getElementById('CurrentID');
+
 document.addEventListener('DOMContentLoaded', function() {
-    var button = document.getElementById('savebutton');
-    // onClick's logic below:
-    button.addEventListener('click', function() {
-        var inputemail = document.getElementById('InputEmail').value;
-        chrome.runtime.sendMessage({email: inputemail});
+    chrome.storage.local.get(['info'], function(result) {
+        currentemail.textContent = result.info['email'];
+        currentid.textContent = result.info['ID'];
     });
+});
+
+button.addEventListener('click', function(e) {
+    var inputemail = document.getElementById('InputEmail').value;
+    chrome.runtime.sendMessage({email: inputemail});
+    currentemail.textContent = inputemail;
+    e.preventDefault();
 });

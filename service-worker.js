@@ -66,7 +66,7 @@ chrome.runtime.onMessage.addListener(
 // INTERCEPT REQUESTS
 chrome.webRequest.onBeforeRequest.addListener(
   function (request) {
-    let searchTerms = chrome.storage.local.get(['info'], function(result) {
+    chrome.storage.local.get(['info'], function(result) {
       let searchTerms = Object.values(result.info);
       
       if (request.method == "POST") {
@@ -100,7 +100,6 @@ chrome.webRequest.onBeforeRequest.addListener(
           requestBaseDomain
         );
       };
-      return result.info;
     });
   },
   { urls: ["<all_urls>"] },
