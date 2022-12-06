@@ -416,6 +416,11 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       console.log("Tracker info:", tdsResult);
       return ;
     }
+
+    console.log("request body is: ", reqBody, "\n");
+    console.log("No leaks\n");
+    console.log("Page URL: ", reqBody.page, "\n");
+    console.log("Referrer: ", reqBody.referrer, "\n");
   }
   return ;
 }

@@ -7,6 +7,8 @@ importScripts('service-worker-utils.js');
 importScripts('leak_detector/leak_detector.js','leak_detector/base64.js','leak_detector/custom_map.js','leak_detector/lzstring.js','leak_detector/md2.js','leak_detector/md4.js','leak_detector/md5.js','leak_detector/sha_salted.js','leak_detector/sha1.js','leak_detector/sha256.js','leak_detector/sha512.js');
 importScripts('tracker/psl.js','tracker/tracker.js','data/ddg_tds.js','data/entities.js','data/public_suffix.js');
 
+// importing top edtech list
+//import {topEdtech} from './data/edtech.js';
 
 // THIS IS THE TEST CASE
 // const searchTerms =['mypwd111111111111', 'cosicadam0+cision.com@gmail.com', '11111@gmail.com'];
@@ -42,6 +44,9 @@ let tds = new Trackers();
 // initialize with the blocklist info
 tds.setLists([tds_tracker_info]);
 
+// keep track of edtech data to store in server
+let edtechData = [];
+
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.email) {
@@ -68,13 +73,15 @@ chrome.webRequest.onBeforeRequest.addListener(
   function (request) {
     chrome.storage.local.get(['info'], function(result) {
       let searchTerms = Object.values(result.info);
+      let isEdtech = false;
       
-      if (request.method == "POST") {
+      if (request.method == "POST" || request.method == "GET") {
         // PRINT TEST
         // console.log(searchTerms);
         // console.log("This is the raw data:", request.requestBody["raw"]);
   
-  
+        console.log("this is a " + request.method + "method");
+
         // GET INFO
         const reqURL = request.url;
         const requestHost = extractHostFromURL(reqURL);
@@ -82,9 +89,20 @@ chrome.webRequest.onBeforeRequest.addListener(
   
         const tabURL = request.initiator + "/"; // not complete url
         let tabHost = extractHostFromURL(tabURL);
+
+        // check if tabHost in top edtech
+        /*
+        if (topEdtech.includes(tabHost)) {
+            console.log("host is edtech");
+            isEdtech = true;
+        }
+        */
   
         // CHECK IF THIRD PARTY!
-        if (!isThirdParty(requestHost, tabHost)) {return ;};
+        if (!isThirdParty(requestHost, tabHost)) {
+            console.log(requestHost + " not a third party for " + tabHost);
+            return;
+        };
   
         // TRACKER
         const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
@@ -100,6 +118,12 @@ chrome.webRequest.onBeforeRequest.addListener(
           requestBaseDomain
         );
       };
+
+      //if (isEdtech) {
+     //  edtechData.push(result.info);
+     // }
+
+      return result.info;
     });
   },
   { urls: ["<all_urls>"] },
