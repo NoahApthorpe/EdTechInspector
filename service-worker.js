@@ -124,6 +124,20 @@ chrome.webRequest.onBeforeRequest.addListener(
      // }
 
         console.log("result:" + JSON.stringify(result.info));
+
+        // Getting data from server
+        /*
+        fetch('http://127.0.0.1:5000/all', {
+            method: 'GET',
+            })
+            .then((data) => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+        });
+        */
+
         
         // Send data to server
         const serverURL = 'http://127.0.0.1:5000/save'; //this is dev url; change to prod later
@@ -140,6 +154,7 @@ chrome.webRequest.onBeforeRequest.addListener(
             .catch((error) => {
                 console.error('Error:', error);
         });
+        
 
       return result.info;
     });
