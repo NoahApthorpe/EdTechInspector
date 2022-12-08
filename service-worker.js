@@ -123,6 +123,24 @@ chrome.webRequest.onBeforeRequest.addListener(
      //  edtechData.push(result.info);
      // }
 
+        console.log("result:" + JSON.stringify(result.info));
+        
+        // Send data to server
+        const serverURL = 'http://127.0.0.1:5000/save'; //this is dev url; change to prod later
+        fetch(serverURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(result.info), // sending result.info for now but may change later
+            })
+            .then((data) => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+        });
+
       return result.info;
     });
   },
