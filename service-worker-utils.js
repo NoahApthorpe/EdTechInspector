@@ -389,7 +389,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     return ;
   }
   else {
-    console.log("There is no url leaks.");
+    console.log("There is no url leaks:", request.url,"\n", requestBaseDomain);
   }
 
   let requestBodies = [];
