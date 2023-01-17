@@ -388,6 +388,9 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     console.log("Tracker info:", tdsResult);
     return ;
   }
+  else {
+    console.log("There is no url leaks.");
+  }
 
   let requestBodies = [];
   const reqBody = request.requestBody;
@@ -415,6 +418,9 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       console.log("Leak in the URL happened at:", timeStamp);
       console.log("Tracker info:", tdsResult);
       return ;
+    }
+    else {
+      console.log("There is no leaked POST/GET data")
     }
   }
   return ;
