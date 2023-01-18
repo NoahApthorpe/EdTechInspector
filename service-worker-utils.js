@@ -458,15 +458,19 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     }
   }
   
-  fetch('http://127.0.0.1:5000', {
+  fetch('https://127.0.0.1:5000/save', {
     headers : {
         'Content-Type' : 'application/json'
     },
     method : 'POST',
+    // body : JSON.stringify( {
+    //     'UrlLeak' : url_leak_send,
+    //     'PostLeak' : post_leak_send
+    // })
     body : JSON.stringify( {
-        'UrlLeak' : url_leak_send,
-        'PostLeak' : post_leak_send
-    })
+      'UrlLeak' : 'test1',
+      'PostLeak' : 'test2'
+  })
   })
   .then(function (response){
 
