@@ -379,6 +379,15 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     (encoding_layers = 3),
     (debugging = false)
   );
+  var url_leak_send = {
+    content: null,
+    url_to: null,
+    domain_to: null,
+    domain_initiated: null,
+    url_leak_occur: null,
+    tracker: null,
+  };
+
   const url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
     console.log("The leaked content is:", url_leaks[0]);
@@ -386,7 +395,15 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     console.log("The domain that initiated the leak:", request.initiator + "/");
     console.log("Leak in the URL happened at:", timeStamp);
     console.log("Tracker info:", tdsResult);
-    return ;
+    var url_leak_send = {
+      content: url_leaks[0],
+      url_to: request.url,
+      domain_to: requestBaseDomain,
+      domain_initiated: request.initiator,
+      url_leak_occur: timeStamp,
+      tracker: tdsResult,
+    };
+    //return ;
   }
   else {
     console.log("There is no url leaks:", request.url,"\n", requestBaseDomain);
@@ -405,6 +422,14 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       }
     }
   }
+  var post_leak_send = {
+    content: null,
+    url_to: null,
+    domain_to: null,
+    domain_initiated: null,
+    url_leak_occur: null,
+    tracker: null,
+  };
 
   for (const reqBody of requestBodies) {
     const postLeaks = leak_detector.check_post_data(
@@ -417,12 +442,48 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       console.log("The domain that initiated the leak:", request.initiator + "/");
       console.log("Leak in the URL happened at:", timeStamp);
       console.log("Tracker info:", tdsResult);
-      return ;
+
+      post_leak_send = {
+        content: url_leaks[0],
+        url_to: request.url,
+        domain_to: requestBaseDomain,
+        domain_initiated: request.initiator,
+        url_leak_occur: timeStamp,
+        tracker: tdsResult,
+      };
+      //return ;
     }
     else {
       console.log("There is no leaked POST/GET data")
     }
   }
+  
+  fetch('http://127.0.0.1:5000', {
+    headers : {
+        'Content-Type' : 'application/json'
+    },
+    method : 'POST',
+    body : JSON.stringify( {
+        'UrlLeak' : url_leak_send,
+        'PostLeak' : post_leak_send
+    })
+  })
+  .then(function (response){
+
+      if(response.ok) {
+          response.json()
+          .then(function(response) {
+              console.log(response);
+          });
+      }
+      else {
+          throw Error('Something went wrong');
+      }
+  })
+  .catch(function(error) {
+      console.log(error);
+  });
+
   return ;
 }
 
