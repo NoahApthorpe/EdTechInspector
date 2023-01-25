@@ -463,10 +463,14 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
         'Content-Type' : 'application/json'
     },
     method : 'POST',
+    // body : JSON.stringify( {
+    //     'UrlLeak' : url_leak_send,
+    //     'PostLeak' : post_leak_send
+    // })
     body : JSON.stringify( {
-        'UrlLeak' : url_leak_send,
-        'PostLeak' : post_leak_send
-    })
+      'UrlLeak' : 'test1',
+      'PostLeak' : 'test2'
+  })
   })
   .then(function (response){
 
