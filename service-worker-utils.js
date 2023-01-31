@@ -457,36 +457,44 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       console.log("There is no leaked POST/GET data")
     }
   }
-  
-  fetch('http://127.0.0.1:5000/save', {
-    headers : {
-        'Content-Type' : 'application/json'
-    },
-    method : 'POST',
-    // body : JSON.stringify( {
-    //     'UrlLeak' : url_leak_send,
-    //     'PostLeak' : post_leak_send
-    // })
-    body : JSON.stringify( {
-      'UrlLeak' : 'test1',
-      'PostLeak' : 'test2'
-  })
-  })
-  .then(function (response){
 
-      if(response.ok) {
-          response.json()
-          .then(function(response) {
-              console.log(response);
-          });
-      }
-      else {
-          throw Error('Something went wrong');
-      }
-  })
-  .catch(function(error) {
-      console.log(error);
-  });
+  (async () => {
+    const res = await fetch('http://127.0.0.1:5000/save', {
+      headers : {
+          'Content-Type' : 'application/json'
+      },
+      method : 'POST',
+      // body : JSON.stringify( {
+      //     'UrlLeak' : url_leak_send,
+      //     'PostLeak' : post_leak_send
+      // })
+      body : JSON.stringify( {
+        'UrlLeak' : 'test1',
+        'PostLeak' : 'test2'
+    })
+    })
+    .then(function (response){
+  
+        if(response.ok) {
+            response.json()
+            .then(function(response) {
+                console.log(response);
+            });
+        }
+        else {
+            throw Error('Something went wrong');
+        }
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+
+    const json = await res.json();
+    console.log(json);
+    console.log("Hello!");
+  })();
+  
+  
 
   return ;
 }
