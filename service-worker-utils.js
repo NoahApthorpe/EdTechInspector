@@ -458,7 +458,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     }
   }
 
-  (async () => {
+  (async function f() {
     const res = await fetch('http://127.0.0.1:5000/save', {
       headers : {
           'Content-Type' : 'application/json'
@@ -473,21 +473,21 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
         'PostLeak' : 'test2'
     })
     })
-    .then(function (response){
+    // .then(function (response){
   
-        if(response.ok) {
-            response.json()
-            .then(function(response) {
-                console.log(response);
-            });
-        }
-        else {
-            throw Error('Something went wrong');
-        }
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
+    //     if(response.ok) {
+    //         response.json()
+    //         .then(function(response) {
+    //             console.log(response);
+    //         });
+    //     }
+    //     else {
+    //         throw Error('Something went wrong');
+    //     }
+    // })
+    // .catch(function(error) {
+    //     console.log(error);
+    // });
 
     const json = await res.json();
     console.log(json);
