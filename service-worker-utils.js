@@ -460,34 +460,42 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     }
   }
 
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://127.0.0.1:5000/save");
-  xhr.setRequestHeader("Accept", "application/json");
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.onload = () => console.log(xhr.responseText);
-  xhr.send(JSON.stringify( {
-    'UrlLeak' : url_leak_send,
-    'PostLeak' : post_leak_send
-}));
+  if (posted == false) {
+    posted = true
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://127.0.0.1:5000/save");
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () => console.log(xhr.responseText);
+    xhr.send(JSON.stringify( {
+      // 'UrlLeak' : url_leak_send,
+      // 'PostLeak' : post_leak_send
+      'UrlLeak' : "hello",
+      'PostLeak' : "world"
+}))
+  }
 
-if (posted == false) {
-  posted = true;
-  fetch('http://127.0.0.1:5000/save', {
-      headers : {
-          'Content-Type' : 'application/json'
-      },
-      method : 'POST',
-      body : JSON.stringify( {
-          'UrlLeak' : url_leak_send,
-          'PostLeak' : post_leak_send
-      })
-    })
 
-    const json = res.json();
-    console.log(json);
-    console.log("Hello!");
+  ;
 
-}
+// if (posted == false) {
+//   posted = true;
+//   fetch('http://127.0.0.1:5000/save', {
+//       headers : {
+//           'Content-Type' : 'application/json'
+//       },
+//       method : 'POST',
+//       body : JSON.stringify( {
+//           'UrlLeak' : url_leak_send,
+//           'PostLeak' : post_leak_send
+//       })
+//     })
+
+//     const json = res.json();
+//     console.log(json);
+//     console.log("Hello!");
+
+// }
 
 
   // (async function f() {
