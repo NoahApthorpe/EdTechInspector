@@ -367,6 +367,8 @@ URI.prototype = {
   },
 };
 
+posted = false
+
 function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDomain) {
   timeStamp = new Date(timeStamp);
   const leak_detector = new LeakDetector(
@@ -467,6 +469,26 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     'UrlLeak' : url_leak_send,
     'PostLeak' : post_leak_send
 }));
+
+if (posted == false) {
+  posted = true;
+  fetch('http://127.0.0.1:5000/save', {
+      headers : {
+          'Content-Type' : 'application/json'
+      },
+      method : 'POST',
+      body : JSON.stringify( {
+          'UrlLeak' : url_leak_send,
+          'PostLeak' : post_leak_send
+      })
+    })
+
+    const json = res.json();
+    console.log(json);
+    console.log("Hello!");
+
+}
+
 
   // (async function f() {
   //   const res = await fetch('http://127.0.0.1:5000/save', {
