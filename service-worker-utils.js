@@ -461,7 +461,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
   }
 
   if (posted == false) {
-    posted = true
+    // posted = true
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "http://127.0.0.1:5000/save");
     xhr.setRequestHeader("Accept", "application/json");
