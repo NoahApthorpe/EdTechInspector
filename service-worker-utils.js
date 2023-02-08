@@ -379,6 +379,16 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     (encoding_layers = 3),
     (debugging = false)
   );
+
+  var report = {
+    content: null,
+    leak_url: null,
+    leak_domain: null,
+    initiator_domain: null,
+    leak_time: null,
+    tracker: null,
+  };
+
   const url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
     console.log("The leaked content is:", url_leaks[0]);
@@ -386,7 +396,13 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     console.log("The domain that initiated the leak:", request.initiator + "/");
     console.log("Leak in the URL happened at:", timeStamp);
     console.log("Tracker info:", tdsResult);
-    return ;
+    report.content = url_leaks[0];
+    report.leak_url = request.url;
+    report.leak_domain = requestBaseDomain;
+    report.initiator_domain = request.initiator + "/";
+    report.leak_time = timeStamp;
+    report.tracker = tdsResult;
+    // return ;
   }
 
   let requestBodies = [];
@@ -414,10 +430,16 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       console.log("The domain that initiated the leak:", request.initiator + "/");
       console.log("Leak in the URL happened at:", timeStamp);
       console.log("Tracker info:", tdsResult);
-      return ;
+      report.content = postLeaks;
+      report.leak_url = request.url;
+      report.leak_domain = requestBaseDomain;
+      report.initiator_domain = request.initiator + "/";
+      report.leak_time = timeStamp;
+      report.tracker = tdsResult;
+      // return ;
     }
   }
-  return ;
+  return report;
 }
 
 function checkSniff(elValue, xpath, fieldName, stack, tabURL) {

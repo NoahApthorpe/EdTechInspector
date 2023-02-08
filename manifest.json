@@ -1,9 +1,8 @@
 {
-    // Comments are accepted in the manifest, even though it is JSON.
     "manifest_version": 3,
     "name": "Ed Tech Leak Inspector",
     "description": "An adaptation of Leak Inspector using manifest v3",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "icons": {
         "16": "logo/logo-16.png",
         "48": "logo/logo-48.png",
@@ -22,14 +21,8 @@
         "*://*/*"
       ],
       "permissions": [
-        "contextMenus",
         "webRequest",
-        "webNavigation",
-        "declarativeNetRequest",
-        "activeTab",
-        "tabs",
         "storage",
-        "notifications",
         "<all_urls>",
         "http://*/",
         "https://*/",
