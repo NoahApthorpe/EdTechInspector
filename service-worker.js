@@ -14,21 +14,26 @@ tds.setLists([tds_tracker_info]);
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    if (request.email) {
-      chrome.storage.local.get(['info'], function(obj) {
-        console.log(obj);
-        if (Object.keys(obj).length == 0) {
-          obj = {'info': {'email': undefined,'ID': undefined}};
-        };
-        console.log(obj);
+    chrome.storage.local.get(['info'], function(obj) {
+      if (Object.keys(obj).length == 0) {
+        obj = {'info': {'email': undefined,'ID': undefined}};
+      };
+      if (request.email) {
         obj.info.email = request.email;
         chrome.storage.local.set({info: obj.info}, function() {
           console.log('Value is set to ' + obj.info.email);
         });
-      });
+      };
+      if (request.id) {
+        obj.info.ID = request.id;
+        chrome.storage.local.set({info: obj.info}, function() {
+          console.log('Value is set to ' + obj.info.ID);
+        });
+      };
       // chrome.storage.local.remove(["info"],function(){
       //  })
-    }
+    })
+    sendResponse({response: "Success"});
   }
 );
 
@@ -52,7 +57,7 @@ chrome.webRequest.onBeforeRequest.addListener(
           let tabHost = extractHostFromURL(tabURL);
     
           // CHECK IF THIRD PARTY!
-          if (!isThirdParty(requestHost, tabHost)) {return ;};
+          // if (!isThirdParty(requestHost, tabHost)) {return ;};
     
           // TRACKER
           const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
@@ -60,7 +65,7 @@ chrome.webRequest.onBeforeRequest.addListener(
           // var tdsResult = {};
     
           // CHECK REQUEST
-          report = checkRequest(
+          var report = checkRequest(
             request,
             searchTerms,
             tdsResult,

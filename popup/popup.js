@@ -11,7 +11,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 button.addEventListener('click', function(e) {
     var inputemail = document.getElementById('InputEmail').value;
-    chrome.runtime.sendMessage({email: inputemail});
-    currentemail.textContent = inputemail;
+    var inputid = document.getElementById('InputID').value;
+    chrome.runtime.sendMessage({email: inputemail, id: inputid},
+        function(response){
+            if (response.response == "Success") {
+                currentemail.textContent = inputemail;
+                currentid.textContent = inputid;
+            }
+        });
     e.preventDefault();
 });
