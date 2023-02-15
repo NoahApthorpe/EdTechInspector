@@ -513,21 +513,21 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     //     'PostLeak' : 'test2'
     // })
     })
-    // .then(function (response){
+    .then(function (response){
   
-    //     if(response.ok) {
-    //         response.json()
-    //         .then(function(response) {
-    //             console.log(response);
-    //         });
-    //     }
-    //     else {
-    //         throw Error('Something went wrong');
-    //     }
-    // })
-    // .catch(function(error) {
-    //     console.log(error);
-    // });
+        if(response.ok) {
+            response.json()
+            .then(function(response) {
+                console.log(response);
+            });
+        }
+        else {
+            throw Error('Something went wrong');
+        }
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 
     const json = await res.json();
     console.log(json);
