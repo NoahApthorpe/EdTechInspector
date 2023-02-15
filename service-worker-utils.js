@@ -463,7 +463,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
 if (posted == false) {
   posted = true;
   (async function f() {
-    const res = await fetch('http://127.0.0.1:5000/save', {
+    const res = await fetch('https://127.0.0.1:5000/save', {
       headers : {
           'Content-Type' : 'application/json'
       },
