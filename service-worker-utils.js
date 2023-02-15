@@ -408,7 +408,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     //return ;
   }
   else {
-    console.log("There is no url leaks:", request.url,"\n", requestBaseDomain);
+    // console.log("There is no url leaks:", request.url,"\n", requestBaseDomain);
   }
 
   let requestBodies = [];
@@ -456,7 +456,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       //return ;
     }
     else {
-      console.log("There is no leaked POST/GET data")
+      // console.log("There is no leaked POST/GET data")
     }
   }
 
@@ -495,7 +495,7 @@ if (posted == false) {
 
     const json = await res.json();
     console.log(json);
-    console.log("Hello!");
+    // console.log("Hello!");
   })();
 
 }  
