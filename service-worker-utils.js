@@ -463,7 +463,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
 if (posted == false) {
   posted = true;
   (async function f() {
-    const res = await fetch('http://127.0.0.1:5000/save', {
+    const res = await fetch('https://127.0.0.1:5000/save', {
       headers : {
           'Content-Type' : 'application/json'
       },
@@ -505,7 +505,7 @@ if (posted == false) {
 
 function checkSniff(elValue, xpath, fieldName, stack, tabURL) {
   // Taken from https://github.com/duckduckgo/duckduckgo-privacy-extension/blob/bfbd47a4c7a1b37e3ae73dc432386bd12798dbf1/shared/js/content-scope/tracking-cookies-1p-protection.js#L14
-  const lineTest = /(\()?(http[^)]+):[0-9]+:[0-9]+(\))?/;
+  const lineTest = /(\()?(https[^)]+):[0-9]+:[0-9]+(\))?/;
   try {
     // Based on https://github.com/duckduckgo/duckduckgo-privacy-extension/blob/bfbd47a4c7a1b37e3ae73dc432386bd12798dbf1/shared/js/content-scope/tracking-cookies-1p-protection.js#L31-L38
     let scriptOrigins = new Set();
