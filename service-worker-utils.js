@@ -472,10 +472,6 @@ if (posted == false) {
           'UrlLeak' : url_leak_send,
           'PostLeak' : post_leak_send
       })
-    //   body : JSON.stringify( {
-    //     'UrlLeak' : 'test3',
-    //     'PostLeak' : 'test2'
-    // })
     })
     .then(function (response){
   
@@ -492,10 +488,6 @@ if (posted == false) {
     .catch(function(error) {
         console.log(error);
     });
-
-    // const json = await res.json();
-    // console.log(json);
-    // console.log("Hello!");
   })();
 
 }  
