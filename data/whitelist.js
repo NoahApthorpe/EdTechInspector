@@ -1,5 +1,8 @@
 const whitelist = [
-  'moodle.com',
+  'moodle.edu',
   'google.com',
-  'github.com'
+  'github.com',
+  'aliexpress.us',
+  'colgate.edu',
+  'localhost'
 ];

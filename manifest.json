@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "Ed Tech Leak Inspector",
-    "description": "An adaptation of Leak Inspector using manifest v3",
-    "version": "0.0.1",
+    "description": "A chrome extension for an ongoing research project studying privacy practices of educational technology websites.",
+    "version": "0.0.2",
     "icons": {
         "16": "logo/logo-16.png",
         "48": "logo/logo-48.png",

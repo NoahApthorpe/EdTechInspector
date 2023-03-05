@@ -11,6 +11,18 @@
       <div class="col">
         <form>
             <div class="form-group">
+                <label for="InputDistrict">School District</label>
+                <input type="text" class="form-control" id="InputDistrict" placeholder="Enter school district" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="InputGrade">Student Grade</label>
+                <input type="number" class="form-control" id="InputGrade" placeholder="Enter student grade" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="InputName">Student Name</label>
+                <input type="text" class="form-control" id="InputName" placeholder="Enter student name" autocomplete="off">
+            </div>
+            <div class="form-group">
                 <label for="InputEmail">Email address</label>
                 <input type="email" class="form-control" id="InputEmail" placeholder="Enter email" autocomplete="off">
             </div>
@@ -24,9 +36,18 @@
 
       <div class="col">
         <br>
+        <div>District: <span id="CurrentDistrict"></span></div>
+        <br>
+        <div>Grade: <span id="CurrentGrade"></span></div>
+        <br>
+        <div>Name: <span id="CurrentName"></span></div>
+        <br>
         <div>Email: <span id="CurrentEmail"></span></div>
         <br>
         <div>ID: <span id="CurrentID"></span></div>
+        <br>
+        <div id="useriddiv">Your user id is: <span id="UserID"></span></div>
+        <br>
       </div>
     </div>
   </div>

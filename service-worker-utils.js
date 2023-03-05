@@ -29,7 +29,11 @@ function getHostName(url) {
 }
 
 function getBaseDomainFromUrl(url) {
-  return getBaseDomain(getHostName(url));
+  try {
+    return getBaseDomain(getHostName(url));
+  } catch (error) {
+    return "";
+  }
 }
 // Taken from: https://github.com/EFForg/privacybadger/blob/b8378150248b487e3ce01a3890ad4ee788db0404/src/lib/basedomain.js
 
@@ -381,28 +385,41 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
   );
 
   var report = {
-    content: null,
+    user_id: null,
+    school_district: null,
+    grade: null,
+    request_method: request.method,
+    timestamp: timeStamp,
     leak_url: null,
-    leak_domain: null,
     initiator_domain: null,
-    leak_time: null,
-    tracker: null,
+    url_leak_type: null,
+    body_leak_type: null,
+    tracker_info: tdsResult,
   };
+  chrome.storage.local.get(['id'], function(result) {
+    report.user_id = result.id;
+  });
+  chrome.storage.local.get(['info'], function(result) {
+    report.school_district = result.info['district'];
+    report.grade = result.info['grade'];
+  });
 
   const url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
-    console.log("The leaked content is:", url_leaks[0]);
-    console.log("The url and domain leaked to:\n", request.url,"\n", requestBaseDomain);
-    console.log("The domain that initiated the leak:", request.initiator + "/");
-    console.log("Leak in the URL happened at:", timeStamp);
-    console.log("Tracker info:", tdsResult);
-    report.content = url_leaks[0];
-    report.leak_url = request.url;
-    report.leak_domain = requestBaseDomain;
+    console.log(url_leaks);
+    let url_leak = Array.from(url_leaks)[0].split(",");
+    url_leak = url_leak[url_leak.length-1];
+    chrome.storage.local.get(['info'], function(result) {
+      Object.keys(result.info).forEach(function(key) {
+        if (url_leak == result.info[key]) {
+          report.url_leak_type = key;
+        }
+      });
+    });
+    let leaked_info = Array.from(url_leaks)[0].split(",")[0];
+    report.leak_url = request.url.replace(leaked_info,'LEAKED_EMAIL');
     report.initiator_domain = request.initiator + "/";
-    report.leak_time = timeStamp;
-    report.tracker = tdsResult;
-    // return ;
+    return report;
   }
 
   let requestBodies = [];
@@ -425,18 +442,19 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       (encoding_layers = 3)
     );
     if (postLeaks.size) {
-      console.log("The leaked content is:", postLeaks);
-      console.log("The url and domain leaked to:\n", request.url,"\n", requestBaseDomain);
-      console.log("The domain that initiated the leak:", request.initiator + "/");
-      console.log("Leak in the URL happened at:", timeStamp);
-      console.log("Tracker info:", tdsResult);
-      report.content = postLeaks;
+      // console.log(postLeaks);
+      let postLeak = Array.from(postLeaks)[0].split(",");
+      postLeak = postLeak[postLeak.length-1];
+      chrome.storage.local.get(['info'], function(result) {
+        Object.keys(result.info).forEach(function(key) {
+          if (postLeak == result.info[key]) {
+            report.body_leak_type = key;
+          }
+        });
+      });
       report.leak_url = request.url;
-      report.leak_domain = requestBaseDomain;
       report.initiator_domain = request.initiator + "/";
-      report.leak_time = timeStamp;
-      report.tracker = tdsResult;
-      // return ;
+      return report;
     }
   }
   return report;

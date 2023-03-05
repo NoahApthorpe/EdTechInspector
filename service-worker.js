@@ -12,24 +12,51 @@ let tds = new Trackers();
 // initialize with the blocklist info
 tds.setLists([tds_tracker_info]);
 
+// initialize unique user id on install
+chrome.runtime.onInstalled.addListener(function(details){
+  if(details.reason == "install"){
+    chrome.storage.local.set({id: Math.random().toString(36).substr(2)}, function() {});
+  }
+});
+
+// save info to storage
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     chrome.storage.local.get(['info'], function(obj) {
       if (Object.keys(obj).length == 0) {
-        obj = {'info': {'email': undefined,'ID': undefined}};
+        obj = {'info': {'email': undefined,
+                        'id': undefined,
+                        'name': undefined,
+                        'district': undefined,
+                        'grade': undefined}};
+      };
+      var changed = false;
+      if (request.district) {
+        obj.info.district = request.district;
+        changed = true;
+      };
+      if (request.grade) {
+        obj.info.grade = request.grade;
+        changed = true;
+      };
+      if (request.name) {
+        obj.info.name = request.name;
+        changed = true;
       };
       if (request.email) {
         obj.info.email = request.email;
-        chrome.storage.local.set({info: obj.info}, function() {
-          console.log('Value is set to ' + obj.info.email);
-        });
+        changed = true;
       };
       if (request.id) {
-        obj.info.ID = request.id;
-        chrome.storage.local.set({info: obj.info}, function() {
-          console.log('Value is set to ' + obj.info.ID);
-        });
+        obj.info.id = request.id;
+        changed = true;
       };
+
+      if (changed) {
+        chrome.storage.local.set({info: obj.info}, function() {
+          console.log('Info object is set to ' + obj.info);
+        });
+      }
       // chrome.storage.local.remove(["info"],function(){
       //  })
     })
@@ -43,38 +70,76 @@ chrome.webRequest.onBeforeRequest.addListener(
   function (request) {
     // whitelist check
     // request.initiator looks like "https://www.google.com"
-    if (whitelist.includes(getBaseDomain(request.initiator))) { // getbasedomain returns "google.com"
+    // console.log(getBaseDomainFromUrl(request.initiator));
+    if (whitelist.includes(getBaseDomainFromUrl(request.initiator))) { // getbasedomain returns "google.com"
       chrome.storage.local.get(['info'], function(result) {
-        let searchTerms = Object.values(result.info);
+        let searchTerms = [result.info['name'],result.info['email'],result.info['id']];
         
-        if (request.method == "POST") {
-          // GET INFO
-          const reqURL = request.url;
-          const requestHost = extractHostFromURL(reqURL);
-          const requestBaseDomain = getBaseDomain(requestHost);
-    
-          const tabURL = request.initiator + "/"; // not complete url
-          let tabHost = extractHostFromURL(tabURL);
-    
-          // CHECK IF THIRD PARTY!
-          // if (!isThirdParty(requestHost, tabHost)) {return ;};
-    
-          // TRACKER
-          const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
-          // if (!tdsResult) {return;}
-          // var tdsResult = {};
-    
-          // CHECK REQUEST
-          var report = checkRequest(
-            request,
-            searchTerms,
-            tdsResult,
-            request.timeStamp,
-            requestBaseDomain
-          );
+        // if (request.method == "POST") {
+        // GET INFO
+        const reqURL = request.url;
+        const requestHost = extractHostFromURL(reqURL);
+        const requestBaseDomain = getBaseDomain(requestHost);
+  
+        const tabURL = request.initiator + "/"; // not complete url
+        let tabHost = extractHostFromURL(tabURL);
+  
+        // CHECK IF THIRD PARTY!
+        // if (!isThirdParty(requestHost, tabHost)) {return ;};
+  
+        // TRACKER
+        const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
+        // if (!tdsResult) {return;}
+        // var tdsResult = {};
+  
+        // CHECK REQUEST
+        var report = checkRequest(
+          request,
+          searchTerms,
+          tdsResult,
+          request.timeStamp,
+          requestBaseDomain
+        );
 
-          // send report here?
-        };
+        if (report.leak_url != null) {
+          console.log(report);
+        }
+
+        // send report here
+        // (async function f() {
+        //   const res = await fetch('https://127.0.0.1:5000/save', {
+        //     headers : {
+        //         'Content-Type' : 'application/json'
+        //     },
+        //     method : 'POST',
+        //     body : JSON.stringify( {
+        //         'report' : report
+        //     })
+        //   //   body : JSON.stringify( {
+        //   //     'UrlLeak' : 'test3',
+        //   //     'PostLeak' : 'test2'
+        //   // })
+        //   })
+        //   .then(function (response){
+        
+        //       if(response.ok) {
+        //           response.json()
+        //           .then(function(response) {
+        //               console.log(response);
+        //           });
+        //       }
+        //       else {
+        //           throw Error('Something went wrong');
+        //       }
+        //   })
+        //   .catch(function(error) {
+        //       console.log(error);
+        //   });
+      
+        //   // const json = await res.json();
+        //   // console.log(json);
+        //   // console.log("Hello!");
+        // })();
       });
     };
   },
