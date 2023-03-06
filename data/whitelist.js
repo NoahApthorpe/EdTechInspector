@@ -4,5 +4,6 @@ const whitelist = [
   'github.com',
   'aliexpress.us',
   'colgate.edu',
-  'localhost'
+  'localhost',
+  'youtube.com'
 ];

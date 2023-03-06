@@ -406,7 +406,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
 
   const url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
-    console.log(url_leaks);
+    // console.log(url_leaks);
     let url_leak = Array.from(url_leaks)[0].split(",");
     url_leak = url_leak[url_leak.length-1];
     chrome.storage.local.get(['info'], function(result) {

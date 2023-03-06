@@ -11,7 +11,7 @@
     "options_page": "settings/settings.html",
     "action": {
         "default_title": "Ed Tech Leak Inspector",
-        "default_icon": "logo/logo-16.png",
+        "default_icon": "logo/logo-128.png",
         "default_popup": "popup/popup.html"
     },
     "host_permissions": [
