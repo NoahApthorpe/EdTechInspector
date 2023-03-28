@@ -408,8 +408,9 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     //return ;
   }
   else {
-    // console.log("There is no url leaks:", request.url,"\n", requestBaseDomain);
+    console.log("There are no url leaks:", request.url,"\n", requestBaseDomain);
   }
+  console.log(url_leak_send)
 
   let requestBodies = [];
   const reqBody = request.requestBody;
@@ -456,12 +457,13 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       //return ;
     }
     else {
-      // console.log("There is no leaked POST/GET data")
+      console.log("There is no leaked POST/GET data")
     }
+    console.log(post_leak_send)
   }
 
 if (posted == false) {
-  posted = true;
+  // posted = true;
   (async function f() {
     const res = await fetch('http://127.0.0.1:5000/save', {
       headers : {
