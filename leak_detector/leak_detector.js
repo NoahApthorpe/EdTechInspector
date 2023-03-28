@@ -368,14 +368,14 @@ class LeakDetector {
       prev_encodings
     );
     if (substr_results.length) {
-      return substr_results[0];
+      return string+","+substr_results[0];
     }
 
     // # Check if direct hash or plaintext
     let rv = this.check_if_in_precompute_pool(string);
     // # print('result', rv)
     if (rv !== undefined) {
-      return prev_encodings + rv;
+      return string+","+prev_encodings + rv;
     }
     let tokens = new Set();
     let parameters = new Set();
@@ -437,12 +437,12 @@ class LeakDetector {
             encoding
           );
           if (rv !== undefined) {
-            return rv;
+            return string+","+rv;
           }
         } else {
           rv = this.check_if_in_precompute_pool(decoded);
           if (rv !== undefined) {
-            return encoding_stack + rv;
+            return string+","+encoding_stack + rv;
           }
         }
       }

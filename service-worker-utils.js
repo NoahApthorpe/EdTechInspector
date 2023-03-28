@@ -29,7 +29,11 @@ function getHostName(url) {
 }
 
 function getBaseDomainFromUrl(url) {
-  return getBaseDomain(getHostName(url));
+  try {
+    return getBaseDomain(getHostName(url));
+  } catch (error) {
+    return "";
+  }
 }
 // Taken from: https://github.com/EFForg/privacybadger/blob/b8378150248b487e3ce01a3890ad4ee788db0404/src/lib/basedomain.js
 
@@ -381,34 +385,43 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     (encoding_layers = 3),
     (debugging = false)
   );
-  var url_leak_send = {
-    content: null,
-    url_to: null,
-    domain_to: null,
-    domain_initiated: null,
-    url_leak_occur: null,
-    tracker: null,
+  
+  var report = {
+    user_id: null,
+    school_district: null,
+    grade: null,
+    request_method: request.method,
+    timestamp: timeStamp,
+    leak_url: null,
+    initiator_domain: null,
+    url_leak_type: null,
+    body_leak_type: null,
+    tracker_info: tdsResult,
   };
+  chrome.storage.local.get(['id'], function(result) {
+    report.user_id = result.id;
+  });
+  chrome.storage.local.get(['info'], function(result) {
+    report.school_district = result.info['district'];
+    report.grade = result.info['grade'];
+  });
 
   const url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
-    console.log("The leaked content is:", url_leaks[0]);
-    console.log("The url and domain leaked to:\n", request.url,"\n", requestBaseDomain);
-    console.log("The domain that initiated the leak:", request.initiator + "/");
-    console.log("Leak in the URL happened at:", timeStamp);
-    console.log("Tracker info:", tdsResult);
-    var url_leak_send = {
-      content: url_leaks[0],
-      url_to: request.url,
-      domain_to: requestBaseDomain,
-      domain_initiated: request.initiator,
-      url_leak_occur: timeStamp,
-      tracker: tdsResult,
-    };
-    //return ;
-  }
-  else {
-    console.log("There are no url leaks:", request.url,"\n", requestBaseDomain);
+    // console.log(url_leaks);
+    let url_leak = Array.from(url_leaks)[0].split(",");
+    url_leak = url_leak[url_leak.length-1];
+    chrome.storage.local.get(['info'], function(result) {
+      Object.keys(result.info).forEach(function(key) {
+        if (url_leak == result.info[key]) {
+          report.url_leak_type = key;
+        }
+      });
+    });
+    let leaked_info = Array.from(url_leaks)[0].split(",")[0];
+    report.leak_url = request.url.replace(leaked_info,'LEAKED_EMAIL');
+    report.initiator_domain = request.initiator + "/";
+    return report;
   }
   console.log(url_leak_send)
 
@@ -440,61 +453,22 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
       (encoding_layers = 3)
     );
     if (postLeaks.size) {
-      console.log("The leaked content is:", postLeaks);
-      console.log("The url and domain leaked to:\n", request.url,"\n", requestBaseDomain);
-      console.log("The domain that initiated the leak:", request.initiator + "/");
-      console.log("Leak in the URL happened at:", timeStamp);
-      console.log("Tracker info:", tdsResult);
-
-      post_leak_send = {
-        content: url_leaks[0],
-        url_to: request.url,
-        domain_to: requestBaseDomain,
-        domain_initiated: request.initiator,
-        url_leak_occur: timeStamp,
-        tracker: tdsResult,
-      };
-      //return ;
+      // console.log(postLeaks);
+      let postLeak = Array.from(postLeaks)[0].split(",");
+      postLeak = postLeak[postLeak.length-1];
+      chrome.storage.local.get(['info'], function(result) {
+        Object.keys(result.info).forEach(function(key) {
+          if (postLeak == result.info[key]) {
+            report.body_leak_type = key;
+          }
+        });
+      });
+      report.leak_url = request.url;
+      report.initiator_domain = request.initiator + "/";
+      return report;
     }
-    else {
-      console.log("There is no leaked POST/GET data")
-    }
-    console.log(post_leak_send)
   }
-
-if (posted == false) {
-  // posted = true;
-  (async function f() {
-    const res = await fetch('http://127.0.0.1:5000/save', {
-      headers : {
-          'Content-Type' : 'application/json'
-      },
-      method : 'POST',
-      body : JSON.stringify( {
-          'UrlLeak' : url_leak_send,
-          'PostLeak' : post_leak_send
-      })
-    })
-    .then(function (response){
-  
-        if(response.ok) {
-            response.json()
-            .then(function(response) {
-                console.log(response);
-            });
-        }
-        else {
-            throw Error('Something went wrong');
-        }
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-  })();
-
-}  
-
-  return ;
+  return report;
 }
 
 function checkSniff(elValue, xpath, fieldName, stack, tabURL) {
