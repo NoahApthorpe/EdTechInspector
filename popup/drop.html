@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="drop.css">
+	<title>
+		How to get selected value in
+		dropdown list using JavaScript?
+	</title>
+</head>
+
+<body>
+  <button type="button" id="backbutton">Back</button>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <form>
+					<b>
+						Select Grade
+					</b>
+					<p> Select one from the given options:
+						<select id="InputGrade">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+						</select>
+					</p>
+					<b>
+						Select School
+					</b>
+					<p> Select one from the given options:
+						<select id="InputDistrict">
+							<option value="Chicago">Chicago</option>
+							<option value="Hamilton">Hamilton</option>
+							<option value="Other">Other</option>
+						</select>
+					</p>
+					<button type="submit" class="btn btn-primary" id="savebutton">Save</button>
+				</form>
+      </div>
+
+      <div class="col">
+        <br>
+        <p><strong>Please check info below. In case of inaccuracy please re-enter on left</strong></p>
+        <br>
+        <div><strong>District: </strong><span id="CurrentDistrict"></span></div>
+        <br>
+        <div><strong>Grade: </strong><span id="CurrentGrade"></span></div>
+        <br>
+        <div><strong>Preferred Name: </strong><span id="CurrentPreferredName"></span></div>
+        <br>
+        <div><strong>First Name: </strong><span id="CurrentFirstName"></span></div>
+        <br>
+        <div><strong>Last Name: </strong><span id="CurrentLastName"></span></div>
+        <br>
+        <div><strong>Email: </strong><span id="CurrentEmail"></span></div>
+        <br>
+        <div><strong>ID: </strong><span id="CurrentID"></span></div>
+        <br>
+        <div id="useriddiv">Your user id is: <span id="UserID"></span></div>
+        <br>
+      </div>
+    </div>
+  </div>
+  <br>
+
+<script src="drop.js"></script>
+</body>
+
+</html>

@@ -1,6 +1,5 @@
 var savebutton = document.getElementById('savebutton');
 var backbutton = document.getElementById('backbutton');
-var enterinfobutton = document.getElementById('enterinfobutton');
 var currentdistrict = document.getElementById('CurrentDistrict');
 var currentgrade = document.getElementById('CurrentGrade');
 var currentpreferredname = document.getElementById('CurrentPreferredName');
@@ -10,7 +9,7 @@ var currentemail = document.getElementById('CurrentEmail');
 var currentid = document.getElementById('CurrentID');
 var userid = document.getElementById('UserID');
 
-document.addEventListener('DOMContentLoaded', function(e) {
+document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get(['info'], function(result) {
         currentdistrict.textContent = result.info['district'];
         currentgrade.textContent = result.info['grade'];
@@ -26,24 +25,15 @@ document.addEventListener('DOMContentLoaded', function(e) {
 });
 
 savebutton.addEventListener('click', function(e) {
-    var inputpreferredname = document.getElementById('InputPreferredName').value;
-    var inputfirstname = document.getElementById('InputFirstName').value;
-    var inputlastname = document.getElementById('InputLastName').value;
-    var inputemail = document.getElementById('InputEmail').value;
-    var inputid = document.getElementById('InputID').value;
-    chrome.runtime.sendMessage({preferredname: inputpreferredname,
-                                firstname: inputfirstname,
-                                lastname: inputlastname,
-                                email: inputemail, 
-                                id: inputid},
+    var inputdistrict = document.getElementById('InputDistrict').value;
+    var inputgrade = document.getElementById('InputGrade').value;
+    chrome.runtime.sendMessage({district: inputdistrict,
+                                grade: inputgrade},
         function(response){
             if (response.response == "Success") {
                 chrome.storage.local.get(['info'], function(result) {
-                    currentpreferredname.textContent = inputpreferredname ? inputpreferredname : result.info['preferredname'];
-                    currentfirstname.textContent = inputfirstname ? inputfirstname : result.info['firstname'];
-                    currentlastname.textContent = inputlastname ? inputlastname : result.info['lastname'];
-                    currentemail.textContent = inputemail ? inputemail : result.info['email'];
-                    currentid.textContent = inputid ? inputid : result.info['id'];
+                    currentdistrict.textContent = inputdistrict ? inputdistrict : result.info['district'];
+                    currentgrade.textContent = inputgrade ? inputgrade : result.info['grade'];
                 });
             }
         });
@@ -51,9 +41,5 @@ savebutton.addEventListener('click', function(e) {
 });
 
 backbutton.addEventListener('click', function(e) {
-    window.location.href = "landing.html";
-});
-
-enterinfobutton.addEventListener('click', function(e) {
-    window.location.href = "drop.html";
+    window.location.href = "popup.html";
 });

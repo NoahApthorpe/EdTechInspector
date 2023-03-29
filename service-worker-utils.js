@@ -374,7 +374,7 @@ URI.prototype = {
 function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDomain) {
   timeStamp = new Date(timeStamp);
   const leak_detector = new LeakDetector(
-    searchTerms,
+    Object.values(searchTerms),
     (precompute_hashes = true),
     (hash_set = LIKELY_HASHES),
     (hash_layers = 3),
@@ -393,7 +393,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     leak_url: null,
     initiator_domain: null,
     url_leak_type: null,
-    body_leak_type: null,
+    body_leak_type: [],
     tracker_info: tdsResult,
   };
   chrome.storage.local.get(['id'], function(result) {
@@ -404,22 +404,32 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     report.grade = result.info['grade'];
   });
 
-  const url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
+  var url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
+    url_leaks = Array.from(url_leaks);
     // console.log(url_leaks);
-    let url_leak = Array.from(url_leaks)[0].split(",");
-    url_leak = url_leak[url_leak.length-1];
-    chrome.storage.local.get(['info'], function(result) {
-      Object.keys(result.info).forEach(function(key) {
-        if (url_leak == result.info[key]) {
-          report.url_leak_type = key;
+    var leaked_info = [];
+    var leak_types = [];
+
+    url_leaks.forEach(function(url_leak) {
+      url_leak = url_leak.split(",");
+      var this_leak = url_leak[url_leak.length-1].toLowerCase();
+      Object.keys(searchTerms).forEach(function(key) {
+        if (this_leak == searchTerms[key].toLowerCase()) {
+          leaked_info.push(url_leak[0]);
+          leak_types.push(key);
         }
-      });
+      })
     });
-    let leaked_info = Array.from(url_leaks)[0].split(",")[0];
-    report.leak_url = request.url.replace(leaked_info,'LEAKED_EMAIL');
+
+    var leak_url = request.url;
+    for (var i=0; i<leaked_info.length; i++) {
+      leak_url = leak_url.replaceAll(leaked_info[i],"LEAKED_"+leak_types[i].toUpperCase());
+    };
+    report.leak_url = leak_url;
+    report.url_leak_type = Array.from(new Set(leak_types));
+
     report.initiator_domain = request.initiator + "/";
-    return report;
   }
 
   let requestBodies = [];
@@ -437,24 +447,30 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
   }
 
   for (const reqBody of requestBodies) {
-    const postLeaks = leak_detector.check_post_data(
+    var post_leaks = leak_detector.check_post_data(
       reqBody,
       (encoding_layers = 3)
     );
-    if (postLeaks.size) {
-      // console.log(postLeaks);
-      let postLeak = Array.from(postLeaks)[0].split(",");
-      postLeak = postLeak[postLeak.length-1];
-      chrome.storage.local.get(['info'], function(result) {
-        Object.keys(result.info).forEach(function(key) {
-          if (postLeak == result.info[key]) {
-            report.body_leak_type = key;
+    if (post_leaks.size) {
+      post_leaks = Array.from(post_leaks);
+      console.log(post_leaks);
+      var leaked_info = [];
+      var leak_types = [];
+
+      post_leaks.forEach(function(post_leak) {
+        post_leak = post_leak.split(",");
+        var this_leak = post_leak[post_leak.length-1].toLowerCase();
+        Object.keys(searchTerms).forEach(function(key) {
+          if (this_leak == searchTerms[key].toLowerCase()) {
+            leaked_info.push(post_leak[0]);
+            leak_types.push(key);
           }
-        });
-      });
+        })
+      })
+
       report.leak_url = request.url;
+      report.body_leak_type = Array.from(new Set(report.body_leak_type.concat(leak_types)));
       report.initiator_domain = request.initiator + "/";
-      return report;
     }
   }
   return report;

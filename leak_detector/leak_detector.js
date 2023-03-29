@@ -375,7 +375,7 @@ class LeakDetector {
     let rv = this.check_if_in_precompute_pool(string);
     // # print('result', rv)
     if (rv !== undefined) {
-      return string+","+prev_encodings + rv;
+      return string+","+prev_encodings + "," + rv;
     }
     let tokens = new Set();
     let parameters = new Set();
@@ -442,7 +442,7 @@ class LeakDetector {
         } else {
           rv = this.check_if_in_precompute_pool(decoded);
           if (rv !== undefined) {
-            return string+","+encoding_stack + rv;
+            return string+","+encoding_stack + "," + rv;
           }
         }
       }
@@ -697,7 +697,7 @@ class LeakDetector {
       );
       for (const entry of _precompute_pool) {
         if (input_string.includes(entry.value)) {
-          leaks.push(prev_encodings + entry.key);
+          leaks.push(prev_encodings + "," + entry.key);
         }
       }
     }

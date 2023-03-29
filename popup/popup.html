@@ -6,21 +6,22 @@
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
+  <button type="button" id="backbutton">Back</button>
   <div class="container">
     <div class="row">
       <div class="col">
         <form>
             <div class="form-group">
-                <label for="InputDistrict">School District</label>
-                <input type="text" class="form-control" id="InputDistrict" placeholder="Enter school district" autocomplete="off">
+                <label for="InputPreferredName">Preferred Name</label>
+                <input type="text" class="form-control" id="InputPreferredName" placeholder="Enter preferred name" autocomplete="off">
             </div>
             <div class="form-group">
-                <label for="InputGrade">Student Grade</label>
-                <input type="number" class="form-control" id="InputGrade" placeholder="Enter student grade" autocomplete="off">
+                <label for="InputFirstName">First Name</label>
+                <input type="text" class="form-control" id="InputFirstName" placeholder="Enter first name" autocomplete="off">
             </div>
             <div class="form-group">
-                <label for="InputName">Student Name</label>
-                <input type="text" class="form-control" id="InputName" placeholder="Enter student name" autocomplete="off">
+                <label for="InputLastName">Last Name</label>
+                <input type="text" class="form-control" id="InputLastName" placeholder="Enter last name" autocomplete="off">
             </div>
             <div class="form-group">
                 <label for="InputEmail">Email address</label>
@@ -36,18 +37,25 @@
 
       <div class="col">
         <br>
-        <div>District: <span id="CurrentDistrict"></span></div>
+        <p><strong>Please check info below. In case of inaccuracy please re-enter on left</strong></p>
         <br>
-        <div>Grade: <span id="CurrentGrade"></span></div>
+        <div><strong>District: </strong><span id="CurrentDistrict"></span></div>
         <br>
-        <div>Name: <span id="CurrentName"></span></div>
+        <div><strong>Grade: </strong><span id="CurrentGrade"></span></div>
         <br>
-        <div>Email: <span id="CurrentEmail"></span></div>
+        <div><strong>Preferred Name: </strong><span id="CurrentPreferredName"></span></div>
         <br>
-        <div>ID: <span id="CurrentID"></span></div>
+        <div><strong>First Name: </strong><span id="CurrentFirstName"></span></div>
+        <br>
+        <div><strong>Last Name: </strong><span id="CurrentLastName"></span></div>
+        <br>
+        <div><strong>Email: </strong><span id="CurrentEmail"></span></div>
+        <br>
+        <div><strong>ID: </strong><span id="CurrentID"></span></div>
         <br>
         <div id="useriddiv">Your user id is: <span id="UserID"></span></div>
         <br>
+        <button type="button" class="btn btn-primary" id="enterinfobutton">Enter/change school grade</button>
       </div>
     </div>
   </div>

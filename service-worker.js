@@ -26,7 +26,9 @@ chrome.runtime.onMessage.addListener(
       if (Object.keys(obj).length == 0) {
         obj = {'info': {'email': undefined,
                         'id': undefined,
-                        'name': undefined,
+                        'preferredname': undefined,
+                        'firstname': undefined,
+                        'lastname': undefined,
                         'district': undefined,
                         'grade': undefined}};
       };
@@ -39,8 +41,16 @@ chrome.runtime.onMessage.addListener(
         obj.info.grade = request.grade;
         changed = true;
       };
-      if (request.name) {
-        obj.info.name = request.name;
+      if (request.preferredname) {
+        obj.info.preferredname = request.preferredname;
+        changed = true;
+      };
+      if (request.firstname) {
+        obj.info.firstname = request.firstname;
+        changed = true;
+      };
+      if (request.lastname) {
+        obj.info.lastname = request.lastname;
         changed = true;
       };
       if (request.email) {
@@ -73,7 +83,11 @@ chrome.webRequest.onBeforeRequest.addListener(
     // console.log(getBaseDomainFromUrl(request.initiator));
     if (whitelist.includes(getBaseDomainFromUrl(request.initiator))) { // getbasedomain returns "google.com"
       chrome.storage.local.get(['info'], function(result) {
-        let searchTerms = [result.info['name'],result.info['email'],result.info['id']];
+        let searchTerms = {"preferredname":result.info['preferredname'],
+                          "firstname":result.info['firstname'],
+                          "lastname":result.info['lastname'],
+                          "email":result.info['email'],
+                          "id":result.info['id']};
         
         // if (request.method == "POST") {
         // GET INFO
@@ -106,40 +120,32 @@ chrome.webRequest.onBeforeRequest.addListener(
         }
 
         // send report here
-        // (async function f() {
-        //   const res = await fetch('https://127.0.0.1:5000/save', {
-        //     headers : {
-        //         'Content-Type' : 'application/json'
-        //     },
-        //     method : 'POST',
-        //     body : JSON.stringify( {
-        //         'report' : report
-        //     })
-        //   //   body : JSON.stringify( {
-        //   //     'UrlLeak' : 'test3',
-        //   //     'PostLeak' : 'test2'
-        //   // })
-        //   })
-        //   .then(function (response){
+        (async function f() {
+          const res = await fetch('http://127.0.0.1:5000/save', {
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            method : 'POST',
+            body : JSON.stringify( {
+                'report' : report
+            })
+          })
+          .then(function (response){
         
-        //       if(response.ok) {
-        //           response.json()
-        //           .then(function(response) {
-        //               console.log(response);
-        //           });
-        //       }
-        //       else {
-        //           throw Error('Something went wrong');
-        //       }
-        //   })
-        //   .catch(function(error) {
-        //       console.log(error);
-        //   });
-      
-        //   // const json = await res.json();
-        //   // console.log(json);
-        //   // console.log("Hello!");
-        // })();
+              if(response.ok) {
+                  response.json()
+                  .then(function(response) {
+                      console.log(response);
+                  });
+              }
+              else {
+                  throw Error('Something went wrong');
+              }
+          })
+          .catch(function(error) {
+              console.log(error);
+          });
+        })();
       });
     };
   },
