@@ -6,10 +6,12 @@
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
-  <button type="button" id="backbutton">Back</button>
   <div class="container">
     <div class="row">
       <div class="col">
+        <br>
+        <button type="button" id="backbutton" class="btn btn-secondary">Back</button>
+        <br>
         <form>
             <div class="form-group">
                 <label for="InputPreferredName">Preferred Name</label>
@@ -37,7 +39,7 @@
 
       <div class="col">
         <br>
-        <p><strong>Please check info below. In case of inaccuracy please re-enter on left</strong></p>
+        <p><strong>Below is the info you have entered. If there's a mistake, please re-enter on the left</strong></p>
         <br>
         <div><strong>District: </strong><span id="CurrentDistrict"></span></div>
         <br>
@@ -51,11 +53,11 @@
         <br>
         <div><strong>Email: </strong><span id="CurrentEmail"></span></div>
         <br>
-        <div><strong>ID: </strong><span id="CurrentID"></span></div>
+        <div><strong>Student ID: </strong><span id="CurrentID"></span></div>
         <br>
-        <div id="useriddiv">Your user id is: <span id="UserID"></span></div>
+        <div id="useriddiv">Your participant id for this extension is: <span id="UserID"></span></div>
         <br>
-        <button type="button" class="btn btn-primary" id="enterinfobutton">Enter/change school grade</button>
+        <button type="button" class="btn btn-primary" id="enterinfobutton">Enter/change school district and grade level</button>
       </div>
     </div>
   </div>

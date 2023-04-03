@@ -118,6 +118,7 @@ chrome.webRequest.onBeforeRequest.addListener(
         if (report.leak_url != null) {
           console.log(report);
         }
+        // console.log(report);
 
         // send report here
         (async function f() {
