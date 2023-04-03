@@ -140,6 +140,7 @@ chrome.webRequest.onBeforeRequest.addListener(
                   });
               }
               else {
+                  console.log(response);
                   throw Error('Something went wrong');
               }
           })
