@@ -3,7 +3,7 @@
 // It would correspond to the background script in chrome extensions v2.
 
 // Importing and using functionality from external files is also possible.
-importScripts('service-worker-utils.js');
+importScripts('service-worker-utils.js'); 
 importScripts('leak_detector/leak_detector.js','leak_detector/base64.js','leak_detector/custom_map.js','leak_detector/lzstring.js','leak_detector/md2.js','leak_detector/md4.js','leak_detector/md5.js','leak_detector/sha_salted.js','leak_detector/sha1.js','leak_detector/sha256.js','leak_detector/sha512.js');
 importScripts('tracker/psl.js','tracker/tracker.js','data/ddg_tds.js','data/entities.js','data/public_suffix.js');
 
