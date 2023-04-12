@@ -129,7 +129,7 @@ chrome.webRequest.onBeforeRequest.addListener(
     
           // send report here
           (async function f() {
-            const res = await fetch('http://127.0.0.1:5000/save', {
+            const res = await fetch('https://github.com/sdwang008/EdTechInspector.git', {
               headers : {
                   'Content-Type' : 'application/json'
               },
