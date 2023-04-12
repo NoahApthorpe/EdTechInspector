@@ -1,1 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Site for Ed Tech Privacy</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="settings.css">
+</head>
+<body>
+  <div class="container">
+    Do you want to enable this extension on all websites you visit, or only on select educational technology platform websites?
+    <br>
+    <input type="radio" id="AllWebsites" name="website" value="HTML">
+    <label for="html">All Websites</label><br>
+    <input type="radio" id="EdTechSites" name="website" value="CSS">
+    <label for="css">Select EdTech Sites</label><br>
+    <button type="submit" class="btn btn-primary" id="savebutton">Save Setting</button>
+    <br>
+    <div id="saved">Setting Saved!</div>
+  </div>
 
+
+<script src="settings.js"></script>
+</body>
+</html>

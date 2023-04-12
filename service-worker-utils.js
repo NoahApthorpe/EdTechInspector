@@ -424,7 +424,9 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
 
     var leak_url = request.url;
     for (var i=0; i<leaked_info.length; i++) {
-      leak_url = leak_url.replaceAll(leaked_info[i],"LEAKED_"+leak_types[i].toUpperCase());
+      if (leaked_info[i] != "") {
+        leak_url = leak_url.replaceAll(leaked_info[i],"LEAKED_"+leak_types[i].toUpperCase());
+      };
     };
     report.leak_url = leak_url;
     report.url_leak_type = Array.from(new Set(leak_types));
@@ -453,7 +455,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     );
     if (post_leaks.size) {
       post_leaks = Array.from(post_leaks);
-      console.log(post_leaks);
+      // console.log(post_leaks);
       var leaked_info = [];
       var leak_types = [];
 
