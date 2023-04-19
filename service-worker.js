@@ -128,8 +128,8 @@ chrome.webRequest.onBeforeRequest.addListener(
           // console.log(report);
     
           // send report here
-          (async function f() {
-            const res = await fetch('https://extension.k12inspector.org/save', {
+          (function f() {
+            const res = fetch('https://extension.k12inspector.org/save', {
               headers : {
                   'Content-Type' : 'application/json'
               },
