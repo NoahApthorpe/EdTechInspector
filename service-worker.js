@@ -142,9 +142,8 @@ chrome.webRequest.onBeforeRequest.addListener(
                 })
               })
               .then(function (response){
-            
                   if(response.ok) {
-                      response.json()
+                      response.text()
                       .then(function(response) {
                           console.log(response);
                       });
