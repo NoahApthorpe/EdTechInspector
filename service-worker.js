@@ -87,74 +87,78 @@ chrome.webRequest.onBeforeRequest.addListener(
     // whitelist check
     // request.initiator looks like "https://www.google.com"
     // console.log(getBaseDomainFromUrl(request.initiator));
-    chrome.storage.local.get(["setting"], function(result) {
-      if (result.setting == "all" || whitelist.includes(getBaseDomainFromUrl(request.initiator))) {// getbasedomain returns "google.com"
+    chrome.storage.local.get(["setting"], function(setting) {
+      if (setting.setting == "all" || whitelist.includes(getBaseDomainFromUrl(request.initiator))) {// getbasedomain returns "google.com"
         chrome.storage.local.get(['info'], function(result) {
-          let searchTerms = {"email":result.info['email'],
-                            "preferredname":result.info['preferredname'],
-                            "firstname":result.info['firstname'],
-                            "lastname":result.info['lastname'],
-                            "id":result.info['id']};
-          
-          // if (request.method == "POST") {
-          // GET INFO
-          const reqURL = request.url;
-          const requestHost = extractHostFromURL(reqURL);
-          const requestBaseDomain = getBaseDomain(requestHost);
-    
-          const tabURL = request.initiator + "/"; // not complete url
-          let tabHost = extractHostFromURL(tabURL);
-    
-          // CHECK IF THIRD PARTY!
-          // if (!isThirdParty(requestHost, tabHost)) {return ;};
-    
-          // TRACKER
-          const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
-          // if (!tdsResult) {return;}
-          // var tdsResult = {};
-    
-          // CHECK REQUEST
-          var report = checkRequest(
-            request,
-            searchTerms,
-            tdsResult,
-            request.timeStamp,
-            requestBaseDomain
-          );
-    
-          if (report.leak_url != null) {
-            console.log(report);
-          }
-          // console.log(report);
-    
-          // send report here
-          (function f() {
-            const res = fetch('https://extension.k12inspector.org/save', {
-              headers : {
-                  'Content-Type' : 'application/json'
-              },
-              method : 'POST',
-              body : JSON.stringify( {
-                  'report' : report
+          chrome.storage.local.get(['id'], function(userid) {
+            let searchTerms = {"email":result.info['email'],
+                              "preferredname":result.info['preferredname'],
+                              "firstname":result.info['firstname'],
+                              "lastname":result.info['lastname'],
+                              "id":result.info['id']};
+            
+            // if (request.method == "POST") {
+            // GET INFO
+            const reqURL = request.url;
+            const requestHost = extractHostFromURL(reqURL);
+            const requestBaseDomain = getBaseDomain(requestHost);
+      
+            const tabURL = request.initiator + "/"; // not complete url
+            let tabHost = extractHostFromURL(tabURL);
+      
+            // CHECK IF THIRD PARTY!
+            // if (!isThirdParty(requestHost, tabHost)) {return ;};
+      
+            // TRACKER
+            const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
+            // if (!tdsResult) {return;}
+            // var tdsResult = {};
+      
+            // CHECK REQUEST
+            var report = checkRequest(
+              request,
+              searchTerms,
+              tdsResult,
+              request.timeStamp,
+              requestBaseDomain,
+              result,
+              userid
+            );
+      
+            if (report.leak_url != null) {
+              console.log(report);
+            }
+            // console.log(report);
+      
+            // send report here
+            (function f() {
+              const res = fetch('https://extension.k12inspector.org/save', {
+                headers : {
+                    'Content-Type' : 'application/json'
+                },
+                method : 'POST',
+                body : JSON.stringify( {
+                    'report' : report
+                })
               })
-            })
-            .then(function (response){
-          
-                if(response.ok) {
-                    response.json()
-                    .then(function(response) {
-                        console.log(response);
-                    });
-                }
-                else {
-                    console.log(response);
-                    throw Error('Something went wrong');
-                }
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-          })();
+              .then(function (response){
+            
+                  if(response.ok) {
+                      response.json()
+                      .then(function(response) {
+                          console.log(response);
+                      });
+                  }
+                  else {
+                      console.log(response);
+                      throw Error('Something went wrong');
+                  }
+              })
+              .catch(function(error) {
+                  console.log(error);
+              });
+            })();
+          });
         });
       };
     });

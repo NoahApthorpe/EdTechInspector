@@ -371,7 +371,7 @@ URI.prototype = {
   },
 };
 
-function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDomain) {
+function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDomain, storedInfo, userid) {
   timeStamp = new Date(timeStamp);
   const leak_detector = new LeakDetector(
     Object.values(searchTerms),
@@ -385,9 +385,9 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
   );
 
   var report = {
-    user_id: null,
-    school_district: null,
-    grade: null,
+    user_id: userid.id,
+    school_district: storedInfo.info['district'],
+    grade: storedInfo.info['grade'],
     request_method: request.method,
     timestamp: timeStamp,
     leak_url: null,
@@ -396,13 +396,6 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     body_leak_type: [],
     tracker_info: tdsResult,
   };
-  chrome.storage.local.get(['id'], function(result) {
-    report.user_id = result.id;
-  });
-  chrome.storage.local.get(['info'], function(result) {
-    report.school_district = result.info['district'];
-    report.grade = result.info['grade'];
-  });
 
   var url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
