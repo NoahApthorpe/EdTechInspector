@@ -91,11 +91,27 @@ chrome.webRequest.onBeforeRequest.addListener(
       if (setting.setting == "all" || whitelist.includes(getBaseDomainFromUrl(request.initiator))) {// getbasedomain returns "google.com"
         chrome.storage.local.get(['info'], function(result) {
           chrome.storage.local.get(['id'], function(userid) {
-            let searchTerms = {"email":result.info['email'],
-                              "preferredname":result.info['preferredname'],
-                              "firstname":result.info['firstname'],
-                              "lastname":result.info['lastname'],
-                              "id":result.info['id']};
+            let searchTerms = {};
+            if (result.info['email'] != undefined) {
+              searchTerms['email'] = result.info['email'];
+            }
+            if (result.info['preferredname'] != undefined) {
+              searchTerms['preferredname'] = result.info['preferredname'];
+            }
+            if (result.info['firstname'] != undefined) {
+              searchTerms['firstname'] = result.info['firstname'];
+            }
+            if (result.info['lastname'] != undefined) {
+              searchTerms['lastname'] = result.info['lastname'];
+            }
+            if (result.info['id'] != undefined) {
+              searchTerms['id'] = result.info['id'];
+            }
+            // let searchTerms = {"email": result.info['email'],
+            //                   "preferredname":result.info['preferredname'],
+            //                   "firstname":result.info['firstname'],
+            //                   "lastname":result.info['lastname'],
+            //                   "id":result.info['id']};
             
             // if (request.method == "POST") {
             // GET INFO
