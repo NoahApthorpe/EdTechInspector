@@ -14,3 +14,8 @@ The code is an adapted version of the [Leak Inspector](https://github.com/leaky-
 - Click on the toggle to turn on "Developer Mode" in the top right corner
 - Click "load unpacked" in the top left corner and select the unzipped folder of the repo
 
+## How To Connect To The Digital Ocean Instance
+- `ssh root@69.55.59.167`
+
+
+
