@@ -19,6 +19,18 @@ chrome.runtime.onInstalled.addListener(function(details){
   }
 });
 
+//launches help page on download
+chrome.runtime.onInstalled.addListener(function (object) {
+  let externalUrl = "https://www.k12inspector.org/chrome-extension-guide";
+  //let internalUrl = chrome.runtime.getURL("views/onboarding.html");
+
+  if (object.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+      chrome.tabs.create({ url: externalUrl }, function (tab) {
+          console.log("New tab launched with https://www.k12inspector.org/chrome-extension-guide");
+      });
+  }
+});
+
 // save info to storage
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -34,6 +46,7 @@ chrome.runtime.onMessage.addListener(
                           'preferredname': undefined,
                           'firstname': undefined,
                           'lastname': undefined,
+                          'phone': undefined, 
                           'district': undefined,
                           'grade': undefined}};
         };
@@ -64,6 +77,10 @@ chrome.runtime.onMessage.addListener(
         };
         if (request.id) {
           obj.info.id = request.id;
+          changed = true;
+        };
+        if (request.phone) {
+          obj.info.phone = request.phone;
           changed = true;
         };
   
@@ -103,6 +120,9 @@ chrome.webRequest.onBeforeRequest.addListener(
             }
             if (result.info['lastname'] != undefined) {
               searchTerms['lastname'] = result.info['lastname'];
+            }
+            if (result.info['phone'] != undefined) {
+              searchTerms['phone'] = result.info['phone'];
             }
             if (result.info['id'] != undefined) {
               searchTerms['id'] = result.info['id'];

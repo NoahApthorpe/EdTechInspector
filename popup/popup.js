@@ -8,6 +8,7 @@ var currentfirstname = document.getElementById('CurrentFirstName');
 var currentlastname = document.getElementById('CurrentLastName');
 var currentemail = document.getElementById('CurrentEmail');
 var currentid = document.getElementById('CurrentID');
+var currentphone = document.getElementById('CurrentPhone');
 var userid = document.getElementById('UserID');
 
 document.addEventListener('DOMContentLoaded', function(e) {
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         currentlastname.textContent = result.info['lastname'];
         currentemail.textContent = result.info['email'];
         currentid.textContent = result.info['id'];
+        currentphone.textContent = result.info['phone'];
     });
     chrome.storage.local.get(['id'], function(result) {
         userid.textContent = result.id;
@@ -31,11 +33,17 @@ savebutton.addEventListener('click', function(e) {
     var inputlastname = document.getElementById('InputLastName').value;
     var inputemail = document.getElementById('InputEmail').value;
     var inputid = document.getElementById('InputID').value;
+    var inputphone = document.getElementById('InputPhone').value;
+    var inputdistrict = document.getElementById('InputDistrict').value;
+    var inputgrade = document.getElementById('InputGrade').value;
     chrome.runtime.sendMessage({preferredname: inputpreferredname,
                                 firstname: inputfirstname,
                                 lastname: inputlastname,
                                 email: inputemail, 
-                                id: inputid},
+                                id: inputid, 
+                                phone: inputphone,
+                                district: inputdistrict,
+                                grade: inputgrade},
         function(response){
             if (response.response == "Success") {
                 chrome.storage.local.get(['info'], function(result) {
@@ -44,6 +52,9 @@ savebutton.addEventListener('click', function(e) {
                     currentlastname.textContent = inputlastname ? inputlastname : result.info['lastname'];
                     currentemail.textContent = inputemail ? inputemail : result.info['email'];
                     currentid.textContent = inputid ? inputid : result.info['id'];
+                    currentphone.textContent = inputphone ? inputphone : result.info['phone'];
+                    currentdistrict.textContent = inputdistrict ? inputdistrict : result.info['district'];
+                    currentgrade.textContent = inputgrade ? inputgrade : result.info['grade'];
                 });
             }
         });

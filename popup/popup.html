@@ -14,7 +14,7 @@
         <br>
         <form>
             <div class="form-group">
-                <label for="InputPreferredName">Preferred Name</label>
+                <label for="InputPreferredName">Preferred Name (Optional)</label>
                 <input type="text" class="form-control" id="InputPreferredName" placeholder="Enter preferred name" autocomplete="off">
             </div>
             <div class="form-group">
@@ -26,6 +26,10 @@
                 <input type="text" class="form-control" id="InputLastName" placeholder="Enter last name" autocomplete="off">
             </div>
             <div class="form-group">
+                <label for="Inputphone">Phone (Optional)</label>
+                <input type="text" class="form-control" id="InputPhone" placeholder="Enter Your Phone" autocomplete="off">
+            </div>
+            <div class="form-group">
                 <label for="InputEmail">Email address</label>
                 <input type="email" class="form-control" id="InputEmail" placeholder="Enter email" autocomplete="off">
             </div>
@@ -33,6 +37,35 @@
                 <label for="InputID">Student ID</label>
                 <input type="text" class="form-control" id="InputID" placeholder="Enter ID" autocomplete="off">
             </div>
+            <b>
+              Select Grade
+            </b>
+            <p> Select one from the given options:
+              <select id="InputGrade">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </p>
+            <b>
+              Select School
+            </b>
+            <p> Select one from the given options:
+              <select id="InputDistrict">
+                <option value="Chicago">Chicago</option>
+                <option value="Hamilton">Hamilton</option>
+                <option value="Other">Other</option>
+              </select>
+            </p>
             <button type="submit" class="btn btn-primary" id="savebutton">Save</button>
         </form>
       </div>
@@ -41,23 +74,25 @@
         <br>
         <p><strong>Below is the info you have entered. If there's a mistake, please re-enter on the left</strong></p>
         <br>
-        <div><strong>District: </strong><span id="CurrentDistrict"></span></div>
-        <br>
-        <div><strong>Grade: </strong><span id="CurrentGrade"></span></div>
-        <br>
         <div><strong>Preferred Name: </strong><span id="CurrentPreferredName"></span></div>
         <br>
         <div><strong>First Name: </strong><span id="CurrentFirstName"></span></div>
         <br>
         <div><strong>Last Name: </strong><span id="CurrentLastName"></span></div>
         <br>
+        <div><strong>Phone: </strong><span id="CurrentPhone"></span></div>
+        <br>
         <div><strong>Email: </strong><span id="CurrentEmail"></span></div>
         <br>
         <div><strong>Student ID: </strong><span id="CurrentID"></span></div>
         <br>
+        <div><strong>Grade: </strong><span id="CurrentGrade"></span></div>
+        <br>
+        <div><strong>District: </strong><span id="CurrentDistrict"></span></div>
+        <br>
         <div id="useriddiv">Your participant id for this extension is: <span id="UserID"></span></div>
         <br>
-        <button type="button" class="btn btn-primary" id="enterinfobutton">Enter/change school district and grade level</button>
+        <!-- <button type="button" class="btn btn-primary" id="enterinfobutton">Enter/change school district and grade level</button> -->
       </div>
     </div>
   </div>
