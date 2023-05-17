@@ -61,6 +61,24 @@ savebutton.addEventListener('click', function(e) {
     e.preventDefault();
 });
 
+//geolocation
+navigator.geolocation.getCurrentPosition(function(position) {
+    //console.log("geooo");
+    var loc = {
+        'latitude': position.coords.latitude,
+        'longitude': position.coords.longitude
+    }
+    //console.log("loc got" + loc.latitude + ',' + loc.longitude);
+    
+    chrome.runtime.sendMessage({location: loc}, (response) => {
+        if (response.error) {
+            console.error(response.error);
+          } else {
+            console.log("geo success");
+          }
+    });
+  }); 
+
 backbutton.addEventListener('click', function(e) {
     window.location.href = "landing.html";
 });

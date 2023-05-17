@@ -371,7 +371,7 @@ URI.prototype = {
   },
 };
 
-function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDomain, storedInfo, userid) {
+function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDomain, storedInfo, userid, location) {
   timeStamp = new Date(timeStamp);
   const leak_detector = new LeakDetector(
     Object.values(searchTerms),
@@ -388,6 +388,7 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     user_id: userid.id,
     school_district: storedInfo.info['district'],
     grade: storedInfo.info['grade'],
+    location: location,
     request_method: request.method,
     timestamp: timeStamp,
     leak_url: null,
