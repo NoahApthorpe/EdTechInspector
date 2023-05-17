@@ -34,6 +34,15 @@ chrome.runtime.onInstalled.addListener(function (object) {
 // save info to storage
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
+    if (Object.keys(request).includes("location")) {
+        //console.log("rece geo msg");
+        chrome.storage.local.set({location: request.location}, function() {
+            console.log("loc pushed" + request.location.latitude + ',' + request.location.longitude);
+          });
+
+        sendResponse({response: "Success"});
+
+    }
     if (Object.keys(request).includes("setting")) {
       chrome.storage.local.set({setting: request.setting}, function() {
         console.log("setting changed!");
@@ -48,7 +57,8 @@ chrome.runtime.onMessage.addListener(
                           'lastname': undefined,
                           'phone': undefined, 
                           'district': undefined,
-                          'grade': undefined}};
+                          'grade': undefined,
+                          'location': undefined}};
         };
         var changed = false;
         if (request.district) {
@@ -108,91 +118,101 @@ chrome.webRequest.onBeforeRequest.addListener(
       if (setting.setting == "all" || whitelist.includes(getBaseDomainFromUrl(request.initiator))) {// getbasedomain returns "google.com"
         chrome.storage.local.get(['info'], function(result) {
           chrome.storage.local.get(['id'], function(userid) {
-            let searchTerms = {};
-            if (result.info['email'] != undefined) {
-              searchTerms['email'] = result.info['email'];
-            }
-            if (result.info['preferredname'] != undefined) {
-              searchTerms['preferredname'] = result.info['preferredname'];
-            }
-            if (result.info['firstname'] != undefined) {
-              searchTerms['firstname'] = result.info['firstname'];
-            }
-            if (result.info['lastname'] != undefined) {
-              searchTerms['lastname'] = result.info['lastname'];
-            }
-            if (result.info['phone'] != undefined) {
-              searchTerms['phone'] = result.info['phone'];
-            }
-            if (result.info['id'] != undefined) {
-              searchTerms['id'] = result.info['id'];
-            }
-            // let searchTerms = {"email": result.info['email'],
-            //                   "preferredname":result.info['preferredname'],
-            //                   "firstname":result.info['firstname'],
-            //                   "lastname":result.info['lastname'],
-            //                   "id":result.info['id']};
-            
-            // if (request.method == "POST") {
-            // GET INFO
-            const reqURL = request.url;
-            const requestHost = extractHostFromURL(reqURL);
-            const requestBaseDomain = getBaseDomain(requestHost);
-      
-            const tabURL = request.initiator + "/"; // not complete url
-            let tabHost = extractHostFromURL(tabURL);
-      
-            // CHECK IF THIRD PARTY!
-            // if (!isThirdParty(requestHost, tabHost)) {return ;};
-      
-            // TRACKER
-            const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
-            // if (!tdsResult) {return;}
-            // var tdsResult = {};
-      
-            // CHECK REQUEST
-            var report = checkRequest(
-              request,
-              searchTerms,
-              tdsResult,
-              request.timeStamp,
-              requestBaseDomain,
-              result,
-              userid
-            );
-      
-            if (report.leak_url != null) {
-              console.log(report);
-            }
-            // console.log(report);
-      
-            // send report here
-            (function f() {
-              const res = fetch('https://extension.k12inspector.org/save', {
-                headers : {
-                    'Content-Type' : 'application/json'
-                },
-                method : 'POST',
-                body : JSON.stringify( {
-                    'report' : report
+            chrome.storage.local.get(['location'], function(locResult) {
+                let searchTerms = {};
+                if (result.info['email'] != undefined) {
+                    searchTerms['email'] = result.info['email'];
+                }
+                if (result.info['preferredname'] != undefined) {
+                    searchTerms['preferredname'] = result.info['preferredname'];
+                }
+                if (result.info['firstname'] != undefined) {
+                    searchTerms['firstname'] = result.info['firstname'];
+                }
+                if (result.info['lastname'] != undefined) {
+                    searchTerms['lastname'] = result.info['lastname'];
+                }
+                if (result.info['phone'] != undefined) {
+                    searchTerms['phone'] = result.info['phone'];
+                }
+                if (result.info['id'] != undefined) {
+                    searchTerms['id'] = result.info['id'];
+                }
+                let location = {};
+                if (Object.keys(locResult).length != 0) {
+                    //console.log("storage loc update");
+                    location = locResult.location;
+                }
+                //console.log("new loc:" + JSON.stringify(location));
+
+                            // let searchTerms = {"email": result.info['email'],
+                //                   "preferredname":result.info['preferredname'],
+                //                   "firstname":result.info['firstname'],
+                //                   "lastname":result.info['lastname'],
+                //                   "id":result.info['id']};
+                
+                // if (request.method == "POST") {
+                // GET INFO
+                const reqURL = request.url;
+                const requestHost = extractHostFromURL(reqURL);
+                const requestBaseDomain = getBaseDomain(requestHost);
+        
+                const tabURL = request.initiator + "/"; // not complete url
+                let tabHost = extractHostFromURL(tabURL);
+        
+                // CHECK IF THIRD PARTY!
+                // if (!isThirdParty(requestHost, tabHost)) {return ;};
+        
+                // TRACKER
+                const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
+                // if (!tdsResult) {return;}
+                // var tdsResult = {};
+        
+                // CHECK REQUEST
+                var report = checkRequest(
+                request,
+                searchTerms,
+                tdsResult,
+                request.timeStamp,
+                requestBaseDomain,
+                result,
+                userid,
+                location
+                );
+        
+                if (report.leak_url != null) {
+                console.log(report);
+                }
+                // console.log(report);
+        
+                // send report here
+                (function f() {
+                const res = fetch('https://extension.k12inspector.org/save', {
+                    headers : {
+                        'Content-Type' : 'application/json'
+                    },
+                    method : 'POST',
+                    body : JSON.stringify( {
+                        'report' : report
+                    })
                 })
-              })
-              .then(function (response){
-                  if(response.ok) {
-                      response.text()
-                      .then(function(response) {
-                          console.log(response);
-                      });
-                  }
-                  else {
-                      console.log(response);
-                      throw Error('Something went wrong');
-                  }
-              })
-              .catch(function(error) {
-                  console.log(error);
-              });
-            })();
+                .then(function (response){
+                    if(response.ok) {
+                        response.text()
+                        .then(function(response) {
+                            console.log(response);
+                        });
+                    }
+                    else {
+                        console.log(response);
+                        throw Error('Something went wrong');
+                    }
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+                })();
+            });
           });
         });
       };
