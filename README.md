@@ -14,6 +14,9 @@ The code is an adapted version of the [Leak Inspector](https://github.com/leaky-
 - Click on the toggle to turn on "Developer Mode" in the top right corner
 - Click "load unpacked" in the top left corner and select the unzipped folder of the repo
 
+## Chorme store link 
+https://chrome.google.com/webstore/detail/ed-tech-leak-inspector/ppgcldipkholdhlpfggpepdfaihfikgb?hl=en&authuser=0
+
 ## What To Do On Digital Ocean 
 
 ### Check On Current Windows
