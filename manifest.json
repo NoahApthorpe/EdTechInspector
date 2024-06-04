@@ -15,19 +15,12 @@
         "default_popup": "popup/landing.html"
     },
     "host_permissions": [
-        "<all_urls>",
-        "http://*/",
-        "https://*/",
         "*://*/*"
       ],
       "permissions": [
         "webRequest",
         "geolocation",
-        "storage",
-        "<all_urls>",
-        "http://*/",
-        "https://*/",
-        "*://*/*"
+        "storage"
       ],
     "background": {
         "service_worker": "service-worker.js"

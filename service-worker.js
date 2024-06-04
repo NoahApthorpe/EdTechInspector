@@ -31,9 +31,25 @@ chrome.runtime.onInstalled.addListener(function (object) {
   }
 });
 
+var debug = null;
+
+// Retrieve the debug setting on startup
+chrome.storage.local.get(['debug'], function(result) {
+  if (result.debug) {
+    debug = result.debug;
+  }
+});
+
+
 // save info to storage
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
+    if (request.debug_setting == "debug") {
+      debug = "debug";
+      chrome.storage.local.set({debug: "debug"}, function() {
+        console.log("Debug mode set to debug");
+      });
+    } 
     if (Object.keys(request).includes("location")) {
         //console.log("rece geo msg");
         chrome.storage.local.set({location: request.location}, function() {
@@ -43,9 +59,9 @@ chrome.runtime.onMessage.addListener(
         sendResponse({response: "Success"});
 
     }
-    if (Object.keys(request).includes("setting")) {
+    if (Object.keys(request).includes("setting") || Object.keys(request).includes("debug_setting")) {
       chrome.storage.local.set({setting: request.setting}, function() {
-        console.log("setting changed!");
+        console.log("debug mode or setting changed!");
       });
     } else {
       chrome.storage.local.get(['info'], function(obj) {
@@ -159,14 +175,19 @@ chrome.webRequest.onBeforeRequest.addListener(
         
                 const tabURL = request.initiator + "/"; // not complete url
                 let tabHost = extractHostFromURL(tabURL);
+
+                console.log("requestHost: " + requestHost);
         
                 // CHECK IF THIRD PARTY!
-                // if (!isThirdParty(requestHost, tabHost)) {return ;};
+                if (!isThirdParty(requestHost, tabHost)) {return ;};
         
                 // TRACKER
                 const tdsResult = tds.getTrackerData(reqURL, tabURL, request.type);
                 // if (!tdsResult) {return;}
                 // var tdsResult = {};
+
+
+                var pinfo = [result.info['email'],result.info['preferredname'],result.info['firstname'],result.info['lastname'], result.info['phone'],result.info['id']];
         
                 // CHECK REQUEST
                 var report = checkRequest(
@@ -177,41 +198,57 @@ chrome.webRequest.onBeforeRequest.addListener(
                 requestBaseDomain,
                 result,
                 userid,
-                location
+                location,
+                debug,
+                pinfo
                 );
-        
-                if (report.leak_url != null) {
+                
                 console.log(report);
-                }
-                // console.log(report);
-        
-                // send report here
-                (function f() {
-                const res = fetch('https://extension.k12inspector.org/save', {
-                    headers : {
-                        'Content-Type' : 'application/json'
+
+                console.log("Sending report to backend")
+
+                console.log("function f entered", request);
+                
+                if (report.leak_url !== "https://extension.k12inspector.org/save") {
+                  if (report.leak_url === null){
+                    report.leak_url = "";
+                    report.original_url = request.url;
+                    report.original_request = request;
+                  }
+                  console.log("The report is :", report);
+                  console.log("report.leak_url is not our website :", report.leak_url);
+                  // Proceed with sending the report
+                  fetch('https://extension.k12inspector.org/save', {
+                    headers: {
+                      'Content-Type': 'application/json'
                     },
-                    method : 'POST',
-                    body : JSON.stringify( {
-                        'report' : report
+                    method: 'POST',
+                    body: JSON.stringify({
+                      'report': report
                     })
-                })
-                .then(function (response){
-                    if(response.ok) {
-                        response.text()
-                        .then(function(response) {
-                            console.log(response);
+                  })
+                  .then(function(response) {
+                    console.log("response received");
+                    console.log(response);
+                    if (response.ok) {
+                      response.text()
+                        .then(function(responseText) {
+                          console.log("Report sent to backend");
+                          console.log(responseText);
                         });
+
+                    } else {
+                      console.log(response);
+                      throw Error('Something went wrong');
                     }
-                    else {
-                        console.log(response);
-                        throw Error('Something went wrong');
-                    }
-                })
-                .catch(function(error) {
+                  })
+                  .catch(function(error) {
                     console.log(error);
-                });
-                })();
+                  });
+                } else {
+                  console.log("report.leak_url is our website, not sending report");
+                }
+                  
             });
           });
         });

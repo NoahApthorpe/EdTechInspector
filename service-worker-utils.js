@@ -291,24 +291,42 @@ function extractHostFromURL(url) {
  * @constructor
  */
 function URI(spec) {
-  this.spec = spec;
-  this._schemeEnd = spec.indexOf(":");
-  if (this._schemeEnd < 0) {
-    throw new Error("Invalid URI scheme");
+
+  // Basic validation to check if spec is a valid string
+  if (typeof spec !== 'string' || spec.length === 0) {
+    throw new Error("Invalid input: URI must be a non-empty string");
   }
 
+  this.spec = spec;
+  this._schemeEnd = spec.indexOf(":");
+
+  // Check if scheme is present
+  if (this._schemeEnd < 0) {
+    throw new Error("Invalid URI: Missing scheme");
+  }
+
+  // if (spec.substr(this._schemeEnd + 1, 2) != "//") {
+  //   // special case for filesystem, blob URIs
+  //   if (this.scheme === "filesystem" || this.scheme === "blob") {
+  //     this._schemeEnd = spec.indexOf(":", this._schemeEnd + 1);
+  //     if (spec.substr(this._schemeEnd + 1, 2) != "//") {
+  //       throw new Error("Unexpected URI structure");
+  //     }
+  //   } else {
+  //     throw new Error("Unexpected URI structure");
+  //   }
+  // }
   if (spec.substr(this._schemeEnd + 1, 2) != "//") {
-    // special case for filesystem, blob URIs
+    // Handle special cases for filesystem and blob URIs
     if (this.scheme === "filesystem" || this.scheme === "blob") {
       this._schemeEnd = spec.indexOf(":", this._schemeEnd + 1);
       if (spec.substr(this._schemeEnd + 1, 2) != "//") {
-        throw new Error("Unexpected URI structure");
+        throw new Error("Unexpected URI structure for filesystem/blob URI");
       }
     } else {
-      throw new Error("Unexpected URI structure");
+      throw new Error("Invalid URI: Unexpected URI structure");
     }
   }
-
   this._hostPortStart = this._schemeEnd + 3;
   this._hostPortEnd = spec.indexOf("/", this._hostPortStart);
   if (this._hostPortEnd < 0) {
@@ -371,7 +389,7 @@ URI.prototype = {
   },
 };
 
-function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDomain, storedInfo, userid, location) {
+function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDomain, storedInfo, userid, location, debug, pinfo) {
   timeStamp = new Date(timeStamp);
   const leak_detector = new LeakDetector(
     Object.values(searchTerms),
@@ -396,7 +414,27 @@ function checkRequest(request, searchTerms, tdsResult, timeStamp, requestBaseDom
     url_leak_type: null,
     body_leak_type: [],
     tracker_info: tdsResult,
+    personal_info: null
   };
+
+  if (debug == "debug") {
+    report.personal_info = pinfo;
+  };
+
+  // if (setting.debug_setting == "debug") {
+                //   var parcel = JSON.stringify( {
+                //     'report' : report, 
+                //     'first_name' : result.info['firstname'], 
+                //     'last_name' : result.info['lastname'],
+                //     'preferred_name' : result.info['preferredname'],
+                //     'email' : result.info['email'],
+                //     'phone' : result.info['phone']
+                //     }) 
+                // } else { 
+                //   var parcel = JSON.stringify( {
+                //     'report' : report
+                //   })
+                // }
 
   var url_leaks = leak_detector.check_url(request.url, (encoding_layers = 3));
   if (url_leaks.size) {
